@@ -1,0 +1,24 @@
+{
+    "name": "checkmarx-report",
+    "version": "1.0.0",
+    "description": "checkmarx-report",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/RezaRahmati/checkmarx-report.git"
+    },
+    "author": "Reza Rahmati",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/RezaRahmati/checkmarx-report/issues"
+    },
+    "homepage": "https://github.com/RezaRahmati/checkmarx-report#readme",
+    "dependencies": {
+        "dotenv": "^10.0.0",
+        "globby": "^12.0.2"
+    }
+}
