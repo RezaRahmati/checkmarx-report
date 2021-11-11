@@ -5,6 +5,8 @@ import dotenv from 'dotenv'
 import { globby } from 'globby';
 import * as convert from 'xml-js';
 import _ from 'lodash';
+import { createReport } from 'docx-templates';
+import multisort from 'multisort';
 
 dotenv.config();
 
@@ -16,8 +18,6 @@ dotenv.config();
         const outDir = process.env.OUTPUT_FOLDER;
         // Get the files as an array
         const xmlFiles = await globby([`${xmlDir}/**/*.xml`]);
-
-        const promises = [];
 
         let fullJson = {};
 
@@ -38,33 +38,21 @@ dotenv.config();
             console.log(fullJson.CxXMLResults.Query.length);
             console.log(Object.keys(fullJson.CxXMLResults.Query[0]));
             console.log(fullJson.CxXMLResults.Query.map(q => q._attributes.id).sort((a, b) => +a - +b));
-
-            promises.push(
-                // fetch(process.env.API_URL, {
-                //     method: 'POST',
-                //     headers: {
-                //         "api-key": process.env.API_KEY,
-                //     },
-                //     body: formData
-                // }).then(res => res.json()).then((res) => {
-                //     console.log("Processing '%s' done", res.fileName);
-                //     return res;
-                // })
-            );
-
         }
 
-        const responses = await Promise.allSettled(promises);
-        const data = responses.map(r => {
-            if (r.status === 'fulfilled') {
-                const value = r.value;
-            } else {
-            }
+        const template = fs.readFileSync(templateFile);
+
+        const buffer = await createReport({
+            template,
+            data: mapJsonToFlatData(fullJson),
+            cmdDelimiter: ['{{', '}}'],
         });
 
         const outputFile = path.join(outDir, `report-${getDate()}.docx`);
         console.log(`Report saved to ${outputFile}`);
-        fs.writeFileSync(outputFile, "");
+
+        fs.writeFileSync(outputFile, buffer)
+
     }
     catch (e) {
         console.error("Whoops!", e);
@@ -76,5 +64,32 @@ const getDate = () => {
     return new Date().toLocaleString().replace(/[T,]/gi, '').replace(/[\/: ]/gi, '-');
 }
 
-const mapJsonToFlatData = () => { }
+const mapJsonToFlatData = (data) => {
+    const result = {
+        name: 'Project X',
+        summary: [],
+        items: []
+    };
+
+    console.log(data.CxXMLResults.Query[0].Result[0].Path.PathNode[0].Snippet.Line.Code)
+
+    result.summary = multisort(data.CxXMLResults.Query, ['~_attributes.SeverityIndex', '~Result.length'])
+        .map(q => ({
+            ...q,
+            Result: _.isArray(q.Result) ? q.Result : [q.Result],
+        }))
+        .map(q => ({
+            name: q._attributes.name,
+            severity: q._attributes.Severity,
+            language: q._attributes.Language,
+            count: q.Result.length,
+            items: q.Result.map(r => ({
+                fileName: r._attributes.FileName,
+                line: r._attributes.Line,
+                snippet: r.Path && r.Path.PathNode && r.Path.PathNode.length && r.Path.PathNode[0].Snippet.Line.Code._text.trim()
+            }))
+        }));
+
+    return result;
+}
 
