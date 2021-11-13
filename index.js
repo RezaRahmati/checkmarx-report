@@ -1,21 +1,23 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import dotenv from 'dotenv'
-// import { default as fetch } from 'node-fetch';
 import { globby } from 'globby';
 import * as convert from 'xml-js';
-import _ from 'lodash';
 import { createReport } from 'docx-templates';
 import multisort from 'multisort';
+import moment from 'moment';
 
 dotenv.config();
 
 (async () => {
 
     try {
+        console.time('Done');
+
         const xmlDir = process.env.XML_FOLDER;
         const templateFile = process.env.TEMPLATE_FILE;
         const outDir = process.env.OUTPUT_FOLDER;
+
         // Get the files as an array
         const xmlFiles = await globby([`${xmlDir}/**/*.xml`]);
 
@@ -23,40 +25,50 @@ dotenv.config();
 
         for (const file of xmlFiles) {
 
-            console.log("Processing '%s' started", file);
+            console.log("Reading '%s' ", file);
 
             const xml = await fs.promises.readFile(file);
 
             const json = JSON.parse(convert.xml2json(xml, { compact: true, spaces: 4 }));
 
-            fullJson = _.mergeWith({}, fullJson, json, (objValue, srcValue, key, object, source) => {
-                if (_.isArray(objValue)) {
-                    return objValue.concat(srcValue);
-                }
-            });
+            json.CxXMLResults.Query = json.CxXMLResults.Query.map(q => ({
+                ...q,
+                Result: Array.isArray(q.Result) ? q.Result : [q.Result],
+            }));
 
-            console.log(fullJson.CxXMLResults.Query.length);
-            console.log(Object.keys(fullJson.CxXMLResults.Query[0]));
-            console.log(fullJson.CxXMLResults.Query.map(q => q._attributes.id).sort((a, b) => +a - +b));
+            fullJson = json.CxXMLResults.Query.reduce((acc, q) => {
+                const id = q._attributes.id;
+
+                if (!acc[id]) {
+                    acc[id] = q;
+                } else {
+                    acc[id].Result = [...acc[id].Result, ...q.Result];
+                }
+
+                return acc;
+            }, fullJson)
         }
 
-        fullJson.CxXMLResults.Query = fullJson.CxXMLResults.Query.map(q => ({
-            ...q,
-            Result: _.isArray(q.Result) ? q.Result : [q.Result],
-        }));
+        const data = mapJsonToFlatData(fullJson);
 
+        console.log("Reading template '%s' ", templateFile);
         const template = fs.readFileSync(templateFile);
 
+        console.log("Generating output");
+        console.time('Generating output');
         const buffer = await createReport({
             template,
-            data: mapJsonToFlatData(fullJson),
+            data: data,
             cmdDelimiter: ['{{', '}}'],
         });
+        console.timeEnd('Generating output');
 
         const outputFile = path.join(outDir, `report-${getDate()}.docx`);
-        console.log(`Report saved to ${outputFile}`);
+        console.log("Saving output '%s'", outputFile);
 
         fs.writeFileSync(outputFile, buffer)
+
+        console.timeEnd('Done')
 
     }
     catch (e) {
@@ -66,12 +78,12 @@ dotenv.config();
 })();
 
 const getDate = () => {
-    return new Date().toLocaleString().replace(/[T,]/gi, '').replace(/[\/: ]/gi, '-');
+    return moment().format('YYYY-MM-DD-HH-mm');
 }
 
 const mapJsonToFlatData = (data) => {
     const result = {
-        name: 'Project X',
+        name: process.env.PROJECT || 'Project Name',
         summary: [],
         severity: {
             high: null,
@@ -81,7 +93,12 @@ const mapJsonToFlatData = (data) => {
         }
     };
 
-    result.summary = multisort(data.CxXMLResults.Query, ['~_attributes.SeverityIndex', '~Result.length'])
+    const values = Object.values(data);
+
+    console.log('Categories', values.length);
+    values.map(v => `\t${v._attributes.name} (${v.Result.length})`).forEach(i => console.log(i));
+
+    result.summary = multisort(values, ['~_attributes.SeverityIndex', '~Result.length'])
         .map(q => ({
             name: q._attributes.name,
             severity: q._attributes.Severity,
@@ -105,7 +122,7 @@ const mapJsonToFlatData = (data) => {
             }))
         }));
 
-    const flatResults = data.CxXMLResults.Query.map(q => q.Result).flat() || [];
+    const flatResults = values.map(q => q.Result).flat() || [];
 
     result.severity = {
         high: flatResults.filter(q => q._attributes.SeverityIndex == 3).length,
@@ -113,6 +130,8 @@ const mapJsonToFlatData = (data) => {
         low: flatResults.filter(q => q._attributes.SeverityIndex == 1).length,
         info: flatResults.filter(q => q._attributes.SeverityIndex == 0).length,
     }
+
+    console.log('Severity Summary', result.severity);
 
     return result;
 }
