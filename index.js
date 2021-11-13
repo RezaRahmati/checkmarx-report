@@ -40,6 +40,11 @@ dotenv.config();
             console.log(fullJson.CxXMLResults.Query.map(q => q._attributes.id).sort((a, b) => +a - +b));
         }
 
+        fullJson.CxXMLResults.Query = fullJson.CxXMLResults.Query.map(q => ({
+            ...q,
+            Result: _.isArray(q.Result) ? q.Result : [q.Result],
+        }));
+
         const template = fs.readFileSync(templateFile);
 
         const buffer = await createReport({
@@ -68,27 +73,46 @@ const mapJsonToFlatData = (data) => {
     const result = {
         name: 'Project X',
         summary: [],
-        items: []
+        severity: {
+            high: null,
+            medium: null,
+            low: null,
+            info: null
+        }
     };
-
-    console.log(data.CxXMLResults.Query[0].Result[0].Path.PathNode[0].Snippet.Line.Code)
 
     result.summary = multisort(data.CxXMLResults.Query, ['~_attributes.SeverityIndex', '~Result.length'])
         .map(q => ({
-            ...q,
-            Result: _.isArray(q.Result) ? q.Result : [q.Result],
-        }))
-        .map(q => ({
             name: q._attributes.name,
             severity: q._attributes.Severity,
+            SeverityIndex: q._attributes.SeverityIndex,
             language: q._attributes.Language,
             count: q.Result.length,
             items: q.Result.map(r => ({
                 fileName: r._attributes.FileName,
                 line: r._attributes.Line,
-                snippet: r.Path && r.Path.PathNode && r.Path.PathNode.length && r.Path.PathNode[0].Snippet.Line.Code._text.trim()
+                column: r._attributes.Column,
+                severity: r._attributes.Severity,
+                SeverityIndex: r._attributes.SeverityIndex,
+                snippet: r.Path && r.Path.PathNode && r.Path.PathNode.length && r.Path.PathNode[0].Snippet.Line.Code._text.trim(),
+                callStack: r.Path && r.Path.PathNode && r.Path.PathNode.length ? r.Path.PathNode.map(p => ({
+                    fileName: p.FileName && p.FileName._text,
+                    line: p.Line && p.Line._text,
+                    column: p.Line && p.Column._text,
+                    name: p.Name && p.Name._text,
+                    snippet: p.Snippet.Line.Code._text.trim()
+                })) : []
             }))
         }));
+
+    const flatResults = data.CxXMLResults.Query.map(q => q.Result).flat() || [];
+
+    result.severity = {
+        high: flatResults.filter(q => q._attributes.SeverityIndex == 3).length,
+        medium: flatResults.filter(q => q._attributes.SeverityIndex == 2).length,
+        low: flatResults.filter(q => q._attributes.SeverityIndex == 1).length,
+        info: flatResults.filter(q => q._attributes.SeverityIndex == 0).length,
+    }
 
     return result;
 }
