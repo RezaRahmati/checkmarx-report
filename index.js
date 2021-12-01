@@ -6,6 +6,7 @@ import * as convert from 'xml-js';
 import { createReport } from 'docx-templates';
 import multisort from 'multisort';
 import moment from 'moment';
+import { CategoryInfo } from './category-info.js';
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ dotenv.config();
 
             fullJson = json.CxXMLResults.Query.reduce((acc, q) => {
                 const id = q._attributes.id;
+                q._attributes.name = q._attributes.name.replace(/_/g, ' ');
 
                 if (!acc[id]) {
                     acc[id] = q;
@@ -89,14 +91,28 @@ const mapJsonToFlatData = (data) => {
             high: null,
             medium: null,
             low: null,
-            info: null
+            info: null,
+            sum: null
         }
     };
 
     const values = Object.values(data);
 
     console.log('Categories', values.length);
-    values.map(v => `\t${v._attributes.name} (${v.Result.length})`).forEach(i => console.log(i));
+    values.map(v => `\t[${v._attributes.id}] ${v._attributes.name} (${v.Result.length})`).forEach(i => console.log(i));
+
+    values.forEach(v => {
+        if (!CategoryInfo[v._attributes.id]) {
+            console.warn(`Category info for [${v._attributes.id}] ${v._attributes.name} not found. https://crttti.checkmarx.net/cxwebclient/ScanQueryDescription.aspx?queryID=${v._attributes.id}`)
+        }
+    })
+
+    Object.keys(CategoryInfo).forEach(k => {
+        CategoryInfo[k].risk = (CategoryInfo[k].risk || '').trim();
+        CategoryInfo[k].cause = (CategoryInfo[k].cause || '').trim();
+        CategoryInfo[k].recommendation = (CategoryInfo[k].recommendation || '').trim();
+    })
+
 
     result.summary = multisort(values, ['~_attributes.SeverityIndex', '~Result.length'])
         .map(q => ({
@@ -105,6 +121,11 @@ const mapJsonToFlatData = (data) => {
             SeverityIndex: q._attributes.SeverityIndex,
             language: q._attributes.Language,
             count: q.Result.length,
+            info: CategoryInfo[q._attributes.id] ? { ...CategoryInfo[q._attributes.id] } : {
+                risk: '',
+                cause: '',
+                recommendation: '',
+            },
             items: q.Result.map(r => ({
                 fileName: r._attributes.FileName,
                 line: r._attributes.Line,
@@ -129,7 +150,10 @@ const mapJsonToFlatData = (data) => {
         medium: flatResults.filter(q => q._attributes.SeverityIndex == 2).length,
         low: flatResults.filter(q => q._attributes.SeverityIndex == 1).length,
         info: flatResults.filter(q => q._attributes.SeverityIndex == 0).length,
+        sum: null
     }
+
+    result.severity.sum = result.severity.high + result.severity.medium + result.severity.low + result.severity.info;
 
     console.log('Severity Summary', result.severity);
 
