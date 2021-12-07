@@ -126,21 +126,32 @@ const mapJsonToFlatData = (data) => {
                 cause: '',
                 recommendation: '',
             },
-            items: q.Result.map(r => ({
-                fileName: r._attributes.FileName,
-                line: r._attributes.Line,
-                column: r._attributes.Column,
-                severity: r._attributes.Severity,
-                SeverityIndex: r._attributes.SeverityIndex,
-                snippet: r.Path && r.Path.PathNode && r.Path.PathNode.length && r.Path.PathNode[0].Snippet.Line.Code._text.trim(),
-                callStack: r.Path && r.Path.PathNode && r.Path.PathNode.length ? r.Path.PathNode.map(p => ({
-                    fileName: p.FileName && p.FileName._text,
-                    line: p.Line && p.Line._text,
-                    column: p.Line && p.Column._text,
-                    name: p.Name && p.Name._text,
-                    snippet: p.Snippet.Line.Code._text.trim()
-                })) : []
-            }))
+            items: q.Result.map(r => {
+                let pathNodes = [];
+                if (r.Path && r.Path.PathNode) {
+                    if (!Array.isArray(r.Path.PathNode)) {
+                        pathNodes = [r.Path.PathNode];
+                    } else {
+                        pathNodes = r.Path.PathNode;
+                    }
+                }
+                const result = {
+                    fileName: r._attributes.FileName,
+                    line: r._attributes.Line,
+                    column: r._attributes.Column,
+                    severity: r._attributes.Severity,
+                    SeverityIndex: r._attributes.SeverityIndex,
+                    snippet: pathNodes && pathNodes.length && pathNodes[0].Snippet.Line.Code._text.trim(),
+                    callStack: pathNodes.map(p => ({
+                        fileName: p.FileName && p.FileName._text,
+                        line: p.Line && p.Line._text,
+                        column: p.Line && p.Column._text,
+                        name: p.Name && p.Name._text,
+                        snippet: p.Snippet.Line.Code._text.trim()
+                    }))
+                };
+                return result;
+            })
         }));
 
     const flatResults = values.map(q => q.Result).flat() || [];
