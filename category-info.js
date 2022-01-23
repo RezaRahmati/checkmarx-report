@@ -453,27 +453,27 @@ Note that this issue does not affect all browsers, and depends on the browser's 
         risk: `
 An attacker could directly access all of the system's data. Using simple tools and text editing, the attacker would be able to steal any sensitive information stored in the server cache (such as personal user details or credit cards), and possibly change or erase existing data that could be subsequently used for other users or relied upon for security decisions. The application stores temporary data in its cache, and queries this data. The application creates the query by simply concatenating strings including the user's input. Since the user input is neither checked for data type validity nor subsequently sanitized, the input could contain commands that would be interpreted as such.`,
         cause: `
-        There are many different kinds of mistakes that introduce information exposures. The severity of the error can range widely, depending on the context in which the product operates, the type of sensitive information that is revealed, and the benefits it may provide to an attacker. Some kinds of sensitive information include:
+There are many different kinds of mistakes that introduce information exposures. The severity of the error can range widely, depending on the context in which the product operates, the type of sensitive information that is revealed, and the benefits it may provide to an attacker. Some kinds of sensitive information include:
 
-            - private, personal information, such as personal messages, financial data, health records, geographic location, or contact details
-            - system status and environment, such as the operating system and installed packages
-            - business secrets and intellectual property
-            - network status and configuration
-            - the product's own code or internal state
-            - metadata, e.g. logging of connections or message headers
-            - indirect information, such as a discrepancy between two internal operations that can be observed by an outsider
-            - Information might be sensitive to different parties, each of which may have their own expectations for whether the information should be protected. These parties include:
-        
-        the product's own users
-            - people or organizations whose information is created or used by the product, even if they are not direct product users
-            - the product's administrators, including the admins of the system(s) and/or networks on which the product operates
-            - the developer
-        
-        Information exposures can occur in different ways:
-        
-            - the code explicitly inserts sensitive information into resources or messages that are intentionally made accessible to unauthorized actors, but should not contain the information - i.e., the information should have been "scrubbed" or "sanitized"
-            - a different weakness or mistake indirectly inserts the sensitive information into resources, such as a web script error revealing the full system path of the program.
-            - the code manages resources that intentionally contain sensitive information, but the resources are unintentionally made accessible to unauthorized actors. In this case, the information exposure is resultant - i.e., a different weakness enabled the access to the information in the first place.`,
+    - private, personal information, such as personal messages, financial data, health records, geographic location, or contact details
+    - system status and environment, such as the operating system and installed packages
+    - business secrets and intellectual property
+    - network status and configuration
+    - the product's own code or internal state
+    - metadata, e.g. logging of connections or message headers
+    - indirect information, such as a discrepancy between two internal operations that can be observed by an outsider
+    - Information might be sensitive to different parties, each of which may have their own expectations for whether the information should be protected. These parties include:
+
+the product's own users
+    - people or organizations whose information is created or used by the product, even if they are not direct product users
+    - the product's administrators, including the admins of the system(s) and/or networks on which the product operates
+    - the developer
+
+Information exposures can occur in different ways:
+
+    - the code explicitly inserts sensitive information into resources or messages that are intentionally made accessible to unauthorized actors, but should not contain the information - i.e., the information should have been "scrubbed" or "sanitized"
+    - a different weakness or mistake indirectly inserts the sensitive information into resources, such as a web script error revealing the full system path of the program.
+    - the code manages resources that intentionally contain sensitive information, but the resources are unintentionally made accessible to unauthorized actors. In this case, the information exposure is resultant - i.e., a different weakness enabled the access to the information in the first place.`,
         recommendation: `
 - Validate all input, regardless of source. Validation should be based on a whitelist: accept only data fitting a specified structure, rather than reject bad patterns. Check for:
     - Data type
@@ -905,5 +905,1267 @@ It is often possible to retrieve and view the application source code. For web a
 A well-developed application will have it's source code well commented. Often, programmers will leave deployment information in comments, or retain debugging data that was used during development. These comments often contain secret data, such as passwords. These password comments are stored in the source code in perpetuity, and are not protected.`,
         recommendation: `
 Do not store secrets, such as passwords, in source code comments.`
+    },
+    591: {
+        risk: `
+A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim’s point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
+
+The attacker could use social engineering to cause the user to send the website modified input, which will be returned in the requested web page.
+`,
+        cause: `
+The application creates web pages that include untrusted data, whether from user input, the application’s database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
+
+Note that an attacker can exploit this vulnerability either by modifying the URL, or by submitting malicious data in the user input or other request fields.
+`,
+        recommendation: `
+- Fully encode all dynamic data, regardless of source, before embedding it in output.
+
+- Encoding should be context-sensitive. For example:
+
+    - HTML encoding for HTML content
+
+    - HTML Attribute encoding for data output to attribute values
+
+- JavaScript encoding for server-generated JavaScript
+
+- It is recommended to use the platform-provided encoding functionality, or known security libraries for encoding output.
+
+- Implement a Content Security Policy (CSP) with explicit whitelists for the application's resources only. 
+
+- As an extra layer of protection, validate all untrusted data, regardless of source (note this is not a replacement for encoding). Validation should be based on a whitelist: accept only data fitting a specified structure, rather than reject bad patterns. Check for:
+
+    - Data type
+    - Size
+    - Range
+    - Format
+    - Expected values
+
+- In the Content-Type HTTP response header, explicitly define character encoding (charset) for the entire page. 
+
+- Set the HTTPOnly flag on the session cookie for "Defense in Depth", to prevent any successful XSS exploits from stealing the cookie.
+
+Java:
+
+Returning Data To Clients Without Encoding
+
+
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    response.setContentType("text/html;charset=UTF-8");
+      
+  	PrintWriter out = response.getWriter();
+  	String loc = request.getParameter("location");
+  
+  	out.println("<h1> Location: " + loc + "<h1>");
+}
+
+
+Returning Data to Clients After Encoding The User Input
+
+
+// Using HtmlEscapers by Google Guava
+
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    response.setContentType("text/html;charset=UTF-8");
+      
+  	PrintWriter out = response.getWriter();
+  	String loc = request.getParameter("location");
+  	String escapedLocation = HtmlEscapers.htmlEscaper().escape(loc);
+  
+  	out.println("<h1> Location: " + escapedLocation + "<h1>");
+}
+
+`
+    },
+    600: {
+        risk: `
+Unreleased resources can cause a drain of those available for system use, eventually causing general reliability and availability problems, such as performance degradation, process bloat, and system instability. If a resource leak can be intentionally exploited by an attacker, it may be possible to cause a widespread DoS (Denial of Service) attack. This might even expose sensitive information between unprivileged users, if the resource continues to retain data or user id between subsequent allocations.`,
+        cause: `
+The application code allocates resource objects, but does not ensure these are always closed and released in a timely manner. This can include database connections, file handles, network sockets, or any other resource that needs to be released. In some cases, these might be released - but only if everything works as planned; if there is any runtime exception during the normal course of system operations, resources start to leak. 
+
+Note that even in managed-memory languages such as Java, these resources must be explicitly released. Many types of resource are not released even when the Garbage Collector runs; and even if the the object would eventually release the resource, we have no control over when the Garbage Collector does run.`,
+        recommendation: `
+- Always close and release all resources.
+
+- Ensure resources are released (along with any other necessary cleanup) in a finally { } block. Do not close resources in a catch { } block, since this is not ensured to be called. 
+
+- Explicitly call .close() on any instance of a class that implements the Closable or AutoClosable interfaces. 
+
+- Alternatively, an even better solution is to use the try-with-resources idiom, in order to automatically close any defined AutoClosable instances.
+
+Java:
+
+Unreleased Database Connection
+
+
+private MyObject getDataFromDb(int id)  {
+	MyObject data = null;
+  	Connection con = null;
+  	try {
+	   Connection con = DriverManager.getConnection(CONN_STRING);      	
+       data = queryDb(con, id); 
+	}
+	catch ( SQLException e ) {
+	   handleError(e);
+	}
+}  
+
+
+Explicit Release of Database Connection
+
+
+private MyObject getDataFromDb(int id)  {
+	MyObject data = null;
+  	Connection con = null;
+  	try {
+	  Connection con = DriverManager.getConnection(CONN_STRING);      	
+      data = queryDb(con, id); 
+	}
+	catch ( SQLException e ) {
+	  handleError(e);
+	}
+  	finally {
+      if ((con != null) && (!con.isClosed())) { con.close(); }
     }
+}  
+
+
+Automatic Implicit Release Using Try-With-Resources
+
+
+private MyObject getDataFromDb(int id)  {
+	MyObject data = null;
+  	Connection con = null;
+  	try (Connection con = DriverManager.getConnection(CONN_STRING)) {
+       data = queryDb(con, id); 
+	}
+	catch ( SQLException e ) {
+	  handleError(e);
+	}
+}  
+
+`
+    },
+    609: {
+        risk: `
+An attacker could engineer audit logs of security-sensitive actions and lay a false audit trail, potentially implicating an innocent user or hiding an incident.`,
+        cause: `
+The application writes audit logs upon security-sensitive actions. Since the audit log includes user input that is neither checked for data type validity nor subsequently sanitized, the input could contain false information made to look like legitimate audit log data
+`,
+        recommendation: `
+- Validate all input, regardless of source. Validation should be based on a whitelist: accept only data fitting a specified structure, rather than reject bad patterns. Check for:
+
+    - Data type
+    - Size
+    - Range
+    - Format
+    - Expected values
+
+- Validation is not a replacement for encoding. Fully encode all dynamic data, regardless of source, before embedding it in logs.
+
+- Use a secure logging mechanism.
+
+Java:
+
+User Input Affects Logging
+
+
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  
+    String color = request.getParameter("color");
+    logger.info("{} was picked", color);
+  	if colorList.contains(color){
+      // Handle Response
+    }else{
+      // Handle Response
+    }
+}
+
+
+User Input Encoded Prior Logging
+
+
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  
+    String color = request.getParameter("color");
+  	cleanColor = color.replace('\t', '_').replace('\n', '_').replace('\r', '_');
+    logger.info("{} was picked", cleanColor);
+  	if colorList.contains(cleanColor){
+      // Handle Response
+    }else{
+      // Handle Response
+    }
+}
+
+`
+    },
+    622: {
+        risk: `
+Exposed details about the application’s environment, users, or associated data (for example, stack trace) could enable an attacker to find another flaw and help the attacker to mount an attack. This may also leak sensitive data, e.g. passwords or database fields.`,
+        cause: `
+The application handles exceptions in an insecure manner, including raw details directly in the error message. This could occur in various ways: by not handling the exception; printing it directly to the output or file; explicitly returning the exception object; or by configuration. These exception details may include sensitive information that could leak to the users due to the occurrence of the runtime error.
+`,
+        recommendation: `
+- Do not expose exception data directly to the output or users, instead return an informative, generic error message. Log the exception details to a dedicated log mechanism. 
+
+- Any method that could throw an exception should be wrapped in an exception handling block that:
+
+- Explicitly handles expected exceptions.
+
+- Includes a default solution to explicitly handle unexpected exceptions.
+
+- Configure a global handler to prevent unhandled errors from leaving the application.
+
+Java:
+
+Handle Exception by Printing To Output
+
+
+private void wrapCallToDB_Unsafe(HttpServletRequest request) throws ServletException, IOException {
+	String paramValue = request.getParameter("Param");
+
+	try {
+	  callDbProc(paramValue);	
+	} catch (SQLException ex) {
+	  ex.printStackTrace();
+	}
+}
+
+
+Write Exception Details to Log, Send Generic Error Message
+
+
+private void wrapCallToDB_SafePrintToLog(HttpServletRequest request) throws ServletException, IOException {
+	String paramValue = request.getParameter("Param");
+
+	try {
+	  callDbProc(paramValue);	
+	} catch (SQLException ex) {
+	  writeExceptionToLog(ex);
+	  System.err.println("Database Error, see log for details");
+	}
+}
+
+`
+    },
+    627: {
+        risk: `
+An attacker could compromise the browser's Same Origin Policy and violate a user's privacy, by manipulating the browser's History object in JavaScript. This could allow the attacker in certain situations to detect whether the user is logged in, track the user's activity, or infer the state of other conditional values. This may also enhance Cross Site Request Forgery (XSRF) attacks, by leaking the result of the initial attack.
+`,
+        cause: `
+Modern browsers expose the user's browsing history to local JavaScript as a stack of previously visited URLs. While the browsers enforce a strict Same Origin Policy (SOP) to prevent pages from one website from reading visited URLs on other websites, the History object does leak the size of the history stack. Using only this information, in some situations the attacker can discover the results of certain checks the application server performs.
+
+For example - if the application redirects an unauthenticated user to the login page, a script on another website can detect whether or not the user is logged in, by checking the length of the history object. This is done by first making a request to the page being redirected to (e.g. "/login"), then replacing that with a redirecting page that only redirects users if that user is not yet authenticated (e.g. "/profile") - if the length of history object remains the same, redirection has occurred back to the page being redirected to, and the history stack is not updated. If the history stack length is updated, that means the page did not redirect the user, causing the new page to be stored in the history stack.
+
+This information leakage is enabled when the application redirects the user's browser based on the value of some condition, the state of the user's server-side session. e.g. whether the user is authenticated to the application, if the user has visited a certain page with specific parameters, or the value of some application data.
+
+Note that this issue does not affect all browsers, and depends on the browser's implementation of Javascript's history object behavior.
+`,
+        recommendation: `
+- Add the response header "X-Frame-Options: DENY" to all sensitive pages in the application, to protect against the IFrame version of XSHM in modern browser versions.
+
+- Add a random value to all redirection URLs as a parameter to ensure that they are unique when inserted into the history stack
+
+Java:
+
+Example of code that leaks the variable state via browser history
+
+
+If (!isAuthenticated)
+    response.sendRedirect("Login.jsp");     
+
+
+Example code that prevents history leakage via random token
+
+
+if (request.getParameter("r") == null)
+    response.sendRedirect("Login.jsp?r=" + (new Random()).nextInt());
+
+If (!isAuthenticated)
+    response.sendRedirect("Login.jsp?r=" + (new Random()).nextInt());
+
+`
+    },
+    646: {
+        risk: `
+Code that reads from Session variables may trust them as server-side variables, but they may have been tainted by user inputs. This can lead to tampering with parameters used to authenticate or authorize users. Further, tainted Session variables offer an additional attack surface against the application - if untrusted data taints a Session variable, and that Session variable  is then used elsewhere without sanitization as if it were trusted, it could lead to further attacks such as Cross-Site Scripting, SQL Injection and more.
+`,
+        cause: `
+Server-side Session variables, or objects, are values assigned to a specific session, which is associated with a specific user. Often, they hold data relevant to that user's session, such as specific identifiers, user-type, authorization, authentication information and more. As such, the paradigm often associated to the Session object is that its contents can be trusted, as users cannot generally set these values themselves. 
+
+The application places user input, which is untrusted data, in the server-side Session object, which is considered a trusted location. This could lead developers to treat untrusted data as trusted.
+`,
+        recommendation: `
+- Validate and sanitize all input, regardless of source. Validation should be based on a whitelist: accept only data fitting a specified structure, rather than reject bad patterns. Check for:
+
+    - Data type
+    - Size
+    - Range
+    - Format
+    - Expected values
+
+- Don’t mix untrusted user input with trusted data.
+
+Java:
+
+Setting User Role by Relying on User Input, Allowing Users to Tamper Its Value and Elevate Their Privilege
+
+
+public void doPost (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	HttpSession session = request.getSession();
+	String username = request.getParameter("username");
+	byte[] password = request.getParameter("password").getBytes();
+	if (isAuthenticated(username, password)) {
+      String role = request.getParameter("role"); // Role can be tampered by user
+	  session.setAttribute("isAuthenticated",true);
+	  session.setAttribute("role", role); 
+	  // Render page //
+	} else {
+	  // Authentication error //
+	}
+}
+
+
+Derive User Role from An Internal Mechanism Based On The Current User
+
+
+public void doPost (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	HttpSession session = request.getSession();
+	String username = request.getParameter("username");
+	byte[] password = request.getParameter("password").getBytes();
+	if (isAuthenticated(username, password)) {
+      String role = getUserRole(username); // Role is not derived from user input, but some post authentication mechanism
+	  session.setAttribute("isAuthenticated",true);
+	  session.setAttribute("role", role);
+	  // Render page //
+	} else {
+	  // Authentication error //
+	}
+}
+`
+    },
+    1063: {
+        risk: `
+A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim’s point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
+
+The attacker could use social engineering to cause the user to send the website modified input, which will be returned in the requested web page.
+`,
+        cause: `
+The application creates web pages that include untrusted data, whether from user input, the application’s database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
+
+Note that an attacker can exploit this vulnerability either by modifying the URL, or by submitting malicious data in the user input or other request fields.
+`,
+        recommendation: `
+- Fully encode all dynamic data, regardless of source, before embedding it in output.
+
+- Encoding should be context-sensitive. For example:
+
+- HTML encoding for HTML content
+
+- HTML Attribute encoding for data output to attribute values
+
+- JavaScript encoding for server-generated JavaScript
+
+- It is recommended to use the platform-provided encoding functionality, or known security libraries for encoding output.
+
+- Implement a Content Security Policy (CSP) with explicit whitelists for the application's resources only. 
+
+- As an extra layer of protection, validate all untrusted data, regardless of source (note this is not a replacement for encoding). Validation should be based on a whitelist: accept only data fitting a specified structure, rather than reject bad patterns. Check for:
+
+    - Data type
+    - Size
+    - Range
+    - Format
+    - Expected values
+
+- In the Content-Type HTTP response header, explicitly define character encoding (charset) for the entire page. 
+
+- Set the HTTPOnly flag on the session cookie for "Defense in Depth", to prevent any successful XSS exploits from stealing the cookie.
+
+Java:
+
+Returning Data To Clients Without Encoding
+
+
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    response.setContentType("text/html;charset=UTF-8");
+      
+  	PrintWriter out = response.getWriter();
+  	String loc = request.getParameter("location");
+  
+  	out.println("<h1> Location: " + loc + "<h1>");
+}
+
+
+Returning Data to Clients After Encoding The User Input
+
+
+// Using HtmlEscapers by Google Guava
+
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    
+    response.setContentType("text/html;charset=UTF-8");
+      
+  	PrintWriter out = response.getWriter();
+  	String loc = request.getParameter("location");
+  	String escapedLocation = HtmlEscapers.htmlEscaper().escape(loc);
+  
+  	out.println("<h1> Location: " + escapedLocation + "<h1>");
+}
+
+`
+    },
+    1653: {
+        risk: `
+A cloned object can be created without using its constructor, but also without going through its clone method's logic. Objects created without logic or checks may result in unexpected behavior, bypass of logical checks and more, depending on implementation and object usage.
+`,
+        cause: `
+Declaring an object that implements the Cloneable interface allows setting an explicit method of cloning a new object, while allowing developers to implement any additional logic or checks; this is particularly useful when a set of objects must adhere to certain constraints. For example, if a new object requires all of an existing object's properties, with the exception of a unique identifier, this type of logic can be implemented into the cloning method. However, this can be bypassed in code - if the cloneable object is inherited by a new object, the new type of object can trivially override clone(), overriding the parent class' clone() logic and cause completely unexpected behavior around this new object type.
+`,
+        recommendation: `
+When defining a Cloneable object, always set its clone() method implementation to "final" to prevent any implementations or extensions of this object from overriding clone() and replacing its logic.
+
+Java:
+
+Class B Hijacks A Objects, Removing Their Clone Logic
+
+public class A implements Cloneable {
+   public Object clone() {
+       A cloneObj;
+       /* 	Clone this object into cloneObj
+       Validate & enforce logic
+       */
+       return A;
+   }
+}
+
+public class B extends A {
+       public Object clone() {
+       B cloneObj;
+       /* 	Clone this object into cloneObj
+       Completely bypasses A's super class logic  
+       */
+       return B;
+   }
+}
+
+
+"Final" Prevents Re-Implementation of Clone Method, Preventing Hijack of Class A Objects
+
+public class A implements Cloneable {
+   public final Object clone() {
+      A cloneObj;
+      /* 	Clone this object into cloneObj
+       Validate & enforce logic
+      */
+      return A;
+   }
+}
+
+`
+    },
+    1661: {
+        risk: `
+Files with implicit or dangerous permissions may allow attackers to retrieve sensitive data from the contents of these files, tamper their contents or potentially execute them.
+`,
+        cause: `
+A file or directory is created with dangerous permissions, either by setting these permissions explicitly or relying on unsafe default permissions.`,
+        recommendation: `
+- Always create files with permissions being set explicitly
+
+- Never set dangerous permissions on files
+
+- Always consider the principle of least privilege when determining who may read, write or execute a file, if these permissions are to be granted at all
+
+Java:
+
+Writing A File with Implicit Permissions
+
+File tempFile = File.createTempFile(TEMP_FILE_PREFIX,TEMP_FILE_SUFFIX, new File(TEMP_FOLDER));
+FileWriter fw = new FileWriter(tempFile);
+fw.write(CONTENT);
+
+
+Writing A File with Explicit Permissions
+
+File tempFile = File.createTempFile(TEMP_FILE_PREFIX,TEMP_FILE_SUFFIX, new File(TEMP_FOLDER));
+FileWriter fw = new FileWriter(tempFile);
+tempFile.setExecutable(false);
+tempFile.setReadable(true);
+tempFile.setWritable(true);
+fw.write(CONTENT);
+
+`
+    },
+    1670: {
+        risk: `
+An attacker could define arbitrary file path for the application to use, potentially leading to:
+
+- Stealing sensitive files, such as configuration or system files
+
+- Overwriting files such as program binaries, configuration files, or system files
+
+- Deleting critical files, causing denial of service (DoS).
+`,
+        cause: `
+The application uses user input in the file path for accessing files on the application server’s local disk.
+`,
+        recommendation: `
+- Ideally, avoid depending on dynamic data for file selection.
+
+- Validate all input, regardless of source. Validation should be based on a whitelist: accept only data fitting a specified structure, rather than reject bad patterns. Check for:
+
+    - Data type
+    - Size
+    - Range
+    - Format
+    - Expected values
+
+- Accept dynamic data only for the filename, not for the path and folders.
+
+- Ensure that file path is fully canonicalized.
+
+- Explicitly limit the application to use a designated folder that is separate from the applications binary folder.
+ 
+- Restrict the privileges of the application’s OS user to necessary files and folders. The application should not be able to write to the application binary folder, and should not read anything outside of the application folder and data folder.`
+    },
+    1699: {
+        risk: `
+An attacker could input a very high value, potentially causing a denial of service (DoS).
+`,
+        cause: `
+The application performs some repetitive task in a loop, and defines the number of times to perform the loop according to user input. A very high value could cause the application to get stuck in the loop and to be unable to continue to other operations.
+`,
+        recommendation: `
+Ideally, don’t base a loop on user-provided data. If it is necessary to do so, the user input must be first validated and its range should be limited.
+
+Java:
+
+Loop Condition Is Not Bounded By Any Value
+
+
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+   int loopCount = 0;
+   try{
+       loopCount = Integer.parseInt(request.getParameter("loopCount"));
+   } catch(NumberFormatException e){
+       return DEFAULT_VAL;
+   }
+   for(int i=0; i < loopCount; i++){
+       //Do Something
+   }
+}
+
+
+Loop Condition is Bounded With MAX_LOOPS
+
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+   int loopCount = 0;
+   try{
+       loopCount = Integer.parseInt(request.getParameter("loopCount"));
+   } catch(NumberFormatException e){
+       return DEFAULT_VAL;
+   }
+   if(loopCount > MAX_LOOPS){
+       loopCount = MAX_LOOPS;
+   }
+   for(int i=0; i < loopCount; i++){
+       //Do Something
+   }
+}
+`
+    },
+    3618: {
+        risk: `
+An attacker could define arbitrary file path for the application to use, potentially leading to:
+
+- Stealing sensitive files, such as configuration or system files
+
+- Overwriting files such as program binaries, configuration files, or system files
+
+- Deleting critical files, causing denial of service (DoS).`,
+        cause: `
+The application uses user input in the file path for accessing files on the application server’s local disk.
+`,
+        recommendation: `
+- Ideally, avoid depending on dynamic data for file selection.
+
+- Validate all input, regardless of source. Validation should be based on a whitelist: accept only data fitting a specified structure, rather than reject bad patterns. Check for:
+
+    - Data type
+    - Size
+    - Range
+    - Format
+    - Expected values
+
+- Accept dynamic data only for the filename, not for the path and folders.
+
+- Ensure that file path is fully canonicalized.
+
+- Explicitly limit the application to use a designated folder that is separate from the applications binary folder.
+
+- Restrict the privileges of the application’s OS user to necessary files and folders. The application should not be able to write to the application binary folder, and should not read anything outside of the application folder and data folder.
+
+Java:
+
+Absolute Path Traversal in "filename" Parameter
+
+
+private String getFileContents(HttpServletRequest request) throws ServletException, FileNotFoundException, IOException {
+	String filename = request.getParameter("filename");
+	Path path = Paths.get(filename);
+	byte[] fileContentBytes = Files.readAllBytes(path);
+	String fileContents = new String(fileContentBytes, FILE_CONTENT_ENCODING_STRING);
+  	return fileContents;
+}
+
+
+Relative Path Traversal in "filename" Parameter
+
+
+private String getFileContents(HttpServletRequest request) throws ServletException, FileNotFoundException, IOException {
+	String filename = request.getParameter("filename");
+	Path path = Paths.get(SERVED_FILES_DIR + filename);
+	byte[] fileContentBytes = Files.readAllBytes(path);
+	String fileContents = new String(fileContentBytes, FILE_CONTENT_ENCODING_STRING);
+  	return fileContents;
+}
+
+
+Path Traversal Mitigate via Sanitization of Path Variable
+
+
+private static String sanitizePathTraversal(String filename) {
+  	Path p = Paths.get(filename);
+  	return p.getFileName().toString();
+}
+
+private String getFileContents_fixed(HttpServletRequest request) throws ServletException, FileNotFoundException, IOException {
+	String filename = sanitizePathTraversal(request.getParameter("filename")); // Ensures access only to files in a given folder, no traversal
+	Path path = Paths.get(SERVED_FILES_DIR + filename);
+	byte[] fileContentBytes = Files.readAllBytes(path);
+	String fileContents = new String(fileContentBytes, FILE_CONTENT_ENCODING_STRING);
+  	return fileContents;
+}
+
+`
+    },
+    3771: {
+        risk: `
+All variables stored by the application in unencrypted memory can potentially be retrieved by an unauthorized user, with privileged access to the machine. For example, a privileged attacker could attach a debugger to the running process, or retrieve the process's memory from the swapfile or crash dump file. Once the attacker finds the user passwords in memory, these can be reused to easily impersonate the user to the system.
+`,
+        cause: `
+- String variables are immutable - in other words, once a string variable is assigned, its value cannot be changed or removed. Thus, these strings may remain around in memory, possibly in multiple locations, for an indefinite period of time until the garbage collector happens to remove it. Sensitive data, such as passwords, will remain exposed in memory as plaintext with no control over their lifetime.
+
+- While it may still be possible to retrieve data from memory, even if it uses a mutable container that is cleared, or retrieve a decryption key and decrypt sensitive data from memory - layering sensitive data with these types of protection would significantly increase the required effort to do so. By setting a high bar for retrieving sensitive data from memory, and reducing the amount and exposure of sensitive data in memory, an adversary is significantly less likely to succeed in obtaining valuable data.
+`,
+        recommendation: `
+When it comes to avoiding Heap Inspection, it is important to note that, given any read access to memory or a memory dump of an application, it is always likely to disclose some sensitive data to an adversary - these suggestions are part of defense-in-depth principles for protection of sensitive data in cases where such memory read access is successfully obtained. These recommendations will enable significant reduction in the lifespan and exposure of sensitive data in memory; however - given enough time, effort and unlimited access to memory, they will only go so far in protecting sensitive data being used by the application. The only way to handle Heap Inspection issues is to minimize and reduce data exposure, and obscure it in memory wherever possible.
+
+
+- Do not store sensitive data, such as passwords or encryption keys, in memory in plain-text, even for a short period of time. 
+
+- Prefer to use specialized classes that store encrypted data in memory to ensure it cannot be trivially retrieved from memory.
+
+- When required to use sensitive data in its raw form, temporarily store it in mutable data types, such as byte arrays, to reduce readability from memory, and then promptly zeroize the memory locations, to reduce exposure duration of this data while in memory.
+
+- Ensure that memory dumps are not exchanged with untrusted parties, as even by ensuring all of the above - it may still be possible to reverse-engineer encrypted containers, or retrieve bytes of sensitive data from memory and rebuild it.
+
+- In Java, do not store passwords in immutable strings - prefer using an encrypted memory object, such as SealedObject.
+
+Java:
+
+Plaintext Password in Immutable String
+
+
+class Heap_Inspection 
+{
+    private String password;
+    
+    public void setPassword(String password)
+    {	
+    this.password = password;
+    }
+}
+
+
+Password Protected in Memory
+
+
+class Heap_Inspection_Fixed 
+{
+    private SealedObject password;
+    
+    public void setPassword(Character[] input)
+    {	
+       Key key = getKeyFromConfiguration();
+       Cipher c = Cipher.getInstance(CIPHER_NAME);
+       c.init(Cipher.ENCRYPT_MODE, key);
+       List<Character> characterList = Arrays.asList(input);
+       password = new SealedObject((Serializable) characterList, c);
+       Arrays.fill(input, '\\0'); // Zero out input. Will also overwrite the values in characterList by reference.
+    }
+}
+
+`
+    },
+    3884: {
+        risk: `
+Files with implicit or dangerous permissions may allow attackers to retrieve sensitive data from the contents of these files, tamper their contents or potentially execute them.
+`,
+        cause: `
+A file or directory is created with dangerous permissions, either by setting these permissions explicitly or relying on unsafe default permissions.`,
+        recommendation: `
+- Always create files with permissions being set explicitly
+
+- Never set dangerous permissions on files
+
+- Always consider the principle of least privilege when determining who may read, write or execute a file, if these permissions are to be granted at all
+
+Java:
+
+Writing A File with Implicit Permissions
+
+File tempFile = File.createTempFile(TEMP_FILE_PREFIX,TEMP_FILE_SUFFIX, new File(TEMP_FOLDER));
+FileWriter fw = new FileWriter(tempFile);
+fw.write(CONTENT);
+
+
+Writing A File with Explicit Permissions
+
+File tempFile = File.createTempFile(TEMP_FILE_PREFIX,TEMP_FILE_SUFFIX, new File(TEMP_FOLDER));
+FileWriter fw = new FileWriter(tempFile);
+tempFile.setExecutable(false);
+tempFile.setReadable(true);
+tempFile.setWritable(true);
+fw.write(CONTENT);
+
+`
+    },
+    3890: {
+        risk: `
+Unauthorized actions may allow attackers to write malicious content or code to files, databases and other I\Os or read sensitive I\O contents. Impact of this issue varies, depending on implementation, but may allow:
+
+
+- Remote code execution, in case an attacker is able to inject malicious data into a writable I\O, which would then be interpreted or compiled as code
+
+- Overwriting or leaking of configuration files
+
+- Compromising confidentiality or integrity of stored data
+`,
+        cause: `
+A logic flow in code triggers I/O and is not authorized. If an attacker can trigger it, it may leave it vulnerable to attack.
+`,
+        recommendation: `
+When logic flows are affected by user input or behavior, always ensure the user is authorized to trigger them.
+
+Java:
+
+Writing to File Without Any Authorization Checks
+
+
+Part filePart = request.getPart("file");
+if (filePart != null) {
+	InputStream filecontent = null;
+	filecontent = filePart.getInputStream();
+	Path path = Paths.get(filename);
+	byte[] contentByteArray = new byte[filecontent.available()];
+	filecontent.read(contentByteArray);
+	Files.write(path, contentByteArray);
+}
+
+
+Using a Basic Authorization Check Based on Session Variables
+
+
+HttpSession session = request.getSession();
+String role = (String)session.getAttribute("role");
+if (role.equals(ADMIN)) {
+	Part filePart = request.getPart("file");
+	if (filePart != null) {
+	   InputStream filecontent = null;
+	   filecontent = filePart.getInputStream();
+	   Path path = Paths.get(filename);
+	   byte[] contentByteArray = new byte[filecontent.available()];
+	   filecontent.read(contentByteArray);
+	   Files.write(path, contentByteArray);
+	}
+}
+
+`
+    },
+    3894: {
+        risk: `
+Allowing users to save files of unrestricted size may allow attackers to fill file storage with junk, or conduct long writing operations which would strain systems conducting the saving operation. Exhausting this storage space or constraining it to the point where it is unavailable will result in denial of service.
+`,
+        cause: `
+Application code does not validate file size before saving files uploaded by users to storage, potentially allowing upload of files of any size.`,
+        recommendation: `
+Constrain intended file size in code to prevent attackers from uploading files of arbitrary sizes by performing size checks. Do not rely on client-side size checks or any size parameters provided by users; evaluate the size of the file on the server, instead.
+
+Java:
+
+public void saveMultipartFile(CommonsMultipartFile multipartFile, String path) throws IOException {
+    FileOutputStream fos = new FileOutputStream(path);
+    fos.write(multipartFile.getBytes());
+    fos.close();
+}
+
+
+
+public void saveMultipartFile(CommonsMultipartFile multipartFile, String path) throws IOException {
+    if (multipartFile.getSize() < MAX_SIZE) {
+       FileOutputStream fos = new FileOutputStream(path);
+       fos.write(multipartFile.getBytes());
+       fos.close();
+    } else {
+       throw new IOException("Maximum file size exceeded!");
+    }
+}
+
+`
+    },
+    4446: {
+        risk: `
+Performing string manipulations and comparisons without regard to the locale, can result in unexpected results. This can lead to bypass of input validation, format string attacks, 
+
+and possibly other string-based attacks such as Cross-Site Scripting (XSS), SQL Injection, and even Denial of Service (DoS).`,
+        cause: `
+Many classes and methods perform locale-sensitive operations, including formatting numbers, dates, and strings according to the specific language and region. Many of these methods 
+
+allow the caller to ignore the locale or character set, and apply formatting and language rules based on the default locale settings for the current environment. 
+       
+However, depending on the default settings, this could result in unexpected results. As an example, using the Turkish locale to transform a string to uppercase will turn a lowercase "i" into "LATIN CAPITAL LETTER I WITH DOT ABOVE" (Unicode codepoint 0130). Clearly, this is not the expected result, and a comparison with a proper uppercase "I" would fail.
+`,
+        recommendation: `
+- Always use locale-sensitive functions for comparing and manipulating specific strings, that are intended to have a particular value. 
+
+- In Java, prefer to use the Locale.ROOT locale as a neutral locale.
+
+Java:
+
+Locale Ignorant String Comparison
+
+
+private bool validateInput(String input) {
+    if (input.toUpperCase().indexOf("SCRIPT") < 0)
+       return true;    // Input string does not contain any form of SCRIPT
+    else
+       return false;
+}
+
+
+Locale-Neutral String Comparison
+
+
+private bool validateInput(String input) {
+    if (input.toUpperCase(Locale.ROOT).indexOf("SCRIPT") < 0)
+       return true;    // Input string does not contain any form of SCRIPT
+    else
+       return false;
+}
+`
+    },
+    4505: {
+        risk: `
+An unsuspecting user might click a vulnerable legitimate-looking link, prepared by an attacker, that leads to a malicious page. The new page that opens can redirect the original page to another malicious page and abuse the trust of the user to create a very convincing phishing attack.
+`,
+        cause: `
+When opening a new page using an  HTML element with the "target" attribute (with any value), or with window.open() within JavaScript, the new page has some access to the original page through the window.opener object. This may allow redirection to a malicious phishing page.
+`,
+        recommendation: `
+For HTML:
+
+- Do not set the "target" attribute (with any value) for links created by users unless required.   
+
+- If required, when using the "target" attribute, also set the "rel" attribute as “noopener noreferrer”:
+
+    - “noopener” for Chrome and Opera
+    - “noreferrer” for Firefox and old browsers
+    - No similar solution for Safari
+
+
+For JavaScript:
+
+- When invoking an untrusted new window using "var newWindow = window.open()", set "newWindow.opener=null" before setting "newWindow.location" to a potentially untrusted site, such that when the new site is open in the new window, it has no access to its original "opener" attribute
+`
+    },
+    6372: {
+        risk: `
+Sending sensitive information in a GET parameter as part of the URL's query string will result in this information potentially becoming cached by the browser, proxies, web-caches or be written into access logs. An attacker with access to any of the above will be able to retrieve this sensitive information.
+`,
+        cause: `
+A password is being sent in a GET request as a query string parameter, either via concatenation of the password value to a URL, or by sending the password as a parameter in a GET request.  Sending parameters in a GET request is caused either by explicitly setting the method to GET, or implicitly by using a mechanism that defaults to a GET request without changing the method to another method (such as POST).
+`,
+        recommendation: `
+Never send sensitive information in the URL. This includes:
+
+    - Credentials
+    - Session or access tokens
+    - Personal information
+
+    Java:
+
+Receiving an access token through GET method.
+
+
+protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    PrintWriter out = response.getWriter();
+    String temp = request.getParameter("secret_token");
+    if (temp==null) { out.print("Unauthorized");} 
+    else {
+       out.print("<html><body><h1 align='center'>" + new Date().toString() + "</h1></body></html>");
+    }
+}
+
+
+Receiving an access token through POST method.
+
+
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    PrintWriter out = response.getWriter();
+    String temp = request.getParameter("secret_token");
+
+    if (temp==null) {
+       out.print("Unauthorized");
+    }else{
+       out.print("<html><body><h1 align='center'>" +
+       new Date().toString() + "</h1></body></html>");
+    }
+}
+
+`
+    },
+    6382: {
+        risk: `
+APIs often respond with objects for a client to consume and, at times, these objects may contain more information than the client requires or intends to use. If the object returned to the client has this excess data, and that data is sensitive, it would be exposed to potentially malicious clients of the API.
+`,
+        cause: `
+The API returns an object with potentially sensitive data-fields, without excluding, filtering or nullifying said sensitive data - thus exposing it in an API response.
+`,
+        recommendation: `
+- When returning objects that hold data from an API, always consider the types and contexts of data being returned - such as whether or not it is required by the API's consumers, and whether or not it is sensitive
+
+- Opt to white-list allowed data to be in control of data flow and remove excess
+
+Java
+
+Exposing a Sensitive Field in a Spring REST API Response
+
+
+// POJO with Sensitive Data
+@Entity
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String username;
+    // Field will be exposed if User object is returned as-is from API:
+    private String encryptedPassword; 
+    // ... public constructors getters and setters ... //
+}
+
+// Spring REST Controller Mapped Method
+@GetMapping("/users/{id}")
+User findOne(@PathVariable Long id) {
+    User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    return user;
+}
+
+
+Using a DTO and ModelMapper To Whitelist Desired Output Fields in a Spring REST API
+
+
+// POJO with Sensitive Data
+@Entity
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String username;
+    private String encryptedPassword; 
+    // ... public constructors getters and setters ... //
+}
+
+// DTO without Sensitive Data
+public class UserDTO {
+    private Long id;
+    private String username;
+    // ... public constructors getters and setters ... //
+}
+
+// Spring REST Controller Mapped Method
+@GetMapping("/users/{id}")
+User findOne(@PathVariable Long id) {
+    User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+    return userDTO;
+}
+
+
+Spring Annotation Used to Exclude A Field from JSON Entirely - Can Also Be Set on Getter Individually to Allow Setting a Value While Preventing Exposure
+
+
+// POJO with Sensitive Data
+@Entity
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String username;
+    @JsonIgnore
+    private String encryptedPassword; 
+    // ... public constructors getters and setters ... //
+}
+
+`
+    },
+    6430: {
+        risk: `
+A Cross-Origin Resource Sharing (CORS) header, "Access-Control-Allow-Origin", that is overly permissive may allow scripts from other web-sites to access, and often manipulate, resources on the affected web-application. These resources may include page contents, tokens and more, allowing potential Cross-Site Request Forgery (CSRF) or Cross-Site Scripting (XSS) attacks, performing actions on a user's behalf such as changing their password, or allow breach of user privacy.
+`,
+        cause: `
+Modern browsers, by default, disallow resource sharing between different domains from accessing one another's DOM contents, cookie jars and other resources, specifically to prevent malicious web-applications from attacking legitimate web-applications and their users as part of the Same-Origin Policy (SOP). For example - website A cannot retrieve contents of website B by default, as that is a breach of the SOP. The Cross-Origin Resource Sharing (CORS) policy, defined by specific headers, allows loosening this strict default behavior to enable cross-site communications. However, when used incorrectly, CORS may enable unintended and potentially malicious behavior by allowing an overly broad trust of web-applications that may submit requests and retrieve responses from the web-application.
+
+The Access-Control-Allow-Origin is incorrectly set to an unsafe value in code.`,
+        recommendation: `
+Where not explicitly required, do not set any CORS headers. Where required, consider business needs for setting these headers, and opt for the most restrictive configuration possible, such as white-listing trusted, secure and allowed domains access, while utilizing other CORS headers to strictly provide required and expected functionality.
+
+Spring Security has a built-in mechanism to configure the CORS header using the @CrossOrigin annotation.
+
+Spring's default allowed origin is overly permissive and it is recommended to manually specify the allowed origins.
+
+Java:
+
+Default 'origins' Parameter Allowing All Origins in a Specific Endpoint
+
+
+@RestController
+@RequestMapping("/resource")
+public class ResourceController {
+
+	@CrossOrigin
+	@GetMapping("/{id}")
+	public Resource retrieve(@PathVariable Long id) {
+	   //  ...
+	}
+}
+
+
+Setting an 'origins' Parameter on a Specific Controller
+
+
+@CrossOrigin(origins = "https://example.com", maxAge = 3600)
+@RestController
+@RequestMapping("/resource")
+public class ResourceController {
+
+	@GetMapping("/{id}")
+	public Resource retrieve(@PathVariable Long id) {
+	 //  ...
+	}
+}
+
+
+Applying the CORS Header to Every Endpoint Using Spring Security's Java Configuration
+
+
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+     http
+	 // by default uses a Bean by the name of corsConfigurationSource
+	 .cors();
+	}
+
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+	    CorsConfiguration configuration = new CorsConfiguration();
+	    configuration.setAllowedOrigins(Arrays.asList("https://example.com"));
+	    configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+// Applying the CORS to all endpoints
+source.registerCorsConfiguration("/**", configuration);
+	    return source;
+	}
+}
+
+
+Wildcard Access-Control-Allow-Origin
+
+
+response.addHeader("Access-Control-Allow-Origin", "*");
+
+
+Access-Control-Allow-Origin Being Set for a Trusted Domain
+
+
+// Assuming https://www.example.com is a trusted domain
+response.addHeader("Access-Control-Allow-Origin", "https://www.example.com");
+
+
+Dynamically Determine Access-Control-Allow-Origin from Origin Header
+
+
+String origin = request.getHeader("Origin");
+response.addHeader("Access-Control-Allow-Origin", origin);
+
+
+XML:
+
+Applying Spring Security's Default CORS with an Overly Permissive Configuration
+
+
+<http>
+	<cors />
+</http>
+
+`
+    },
+    6446: {
+        risk: `
+The Content-Security-Policy header enforces that the source of content, such as the origin of a script, embedded (child) frame, embedding (parent) frame or image, are trusted and allowed by the current web-page; if, within the web-page, a content's source does not adhere to a strict Content Security Policy, it is promptly rejected by the browser. Failure to define a policy may leave the application's users exposed to Cross-Site Scripting (XSS) attacks, Clickjacking attacks, content forgery and more.
+`,
+        cause: `
+The Content-Security-Policy header is used by modern browsers as an indicator for trusted sources of content, including media, images, scripts, frames and more. If these policies are not explicitly defined, default browser behavior would allow untrusted content.
+
+The application creates web responses, but does not properly set a Content-Security-Policy header.
+`,
+        recommendation: `
+Explicitly set the Content-Security-Policy headers for all applicable policy types (frame, script, form, script, media, img etc.) according to business requirements and deployment layout of external file hosting services. Specifically, do not use a wildcard, '*', to specify these policies, as this would allow content from any external resource.
+
+The Content-Security-Policy can be explicitly defined within web-application code, as a header managed by web-server configurations, or within <meta> tags in the HTML <head> section.
+
+Java
+
+Adding CSP Header Using Spring Security Java Configuration
+
+
+@Configuration
+public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+       // Add CSP headers
+       http.headers().contentSecurityPolicy("script-src 'self' https://example.com; object-src https://example.com; report-uri /csp-report-endpoint/");
+    }
+}
+
+
+HTTP Response With CSP Header Set
+
+
+protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    // handle request
+    response.setHeader("Content-Security-Policy", "default-src 'self'"); // default-src is the most restric mode of CSP and covers all applicable policy types
+}
+
+
+HTTP Response with CSP Header in Spring
+
+
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+    .headers()
+    .contentSecurityPolicy("default-src 'self'"); // default-src is the most restric mode of CSP and covers all applicable policy types
+    }
+}
+
+
+XML
+
+Adding CSP Header Using Spring Security XML Configuration
+
+
+<http>
+    <!-- ... -->
+
+    <headers>
+    <content-security-policy policy-directives="script-src 'self' https://apis.example.com">
+       </content-security-policy>
+    </headers>
+</http>
+
+`
+    },
+    6448: {
+        risk: `
+Failure to set an Expect-CT header and provide it with the "enforce" parameter and a reasonable "max-age" value of at least one year may leave users vulnerable to Man-in-the-Middle attacks.
+`,
+        cause: `
+When using SSL/TLS, browsers validate the certificate sent by the server during the connection's handshake against the client's list of recognized CAs (Certificate Authorities). This model's security transfers the trust from the server to the CA.
+
+Declaring Expect-CT header makes the supported browsers use Certificate Transparency in order to detect compromises the CAs integrity and, as defined in the header parameters, to report and/or enforce a secure connection.
+
+Using Certificate Transparency with Expect-CT and the right parameters, it's possible to avoid Man-in-the-Middle attacks.
+`,
+        recommendation: `
+- Before setting the Expect-CT header - consider the implications it may have:
+
+    - Enforcing Expect-CT will prevent any future use of HTTP, which could hinder some testing
+
+    - Disabling Expect-CT is not trivial, as once it is disabled on the site, it must also be disabled on the browser
+
+- Test your environment by setting the Expect-CT header without the 'enforce' flag in order to check if there are certificate issues - then use the 'enforce' flag
+
+- Set the Expect-CT header either explicitly within application code, or using web-server configurations.
+
+- Ensure the "max-age" value for Expect-CT headers is set to 31536000 to ensure the use of Certificate Transparency is strictly enforced for at least one year.
+
+- If this header is added via configuration, ensure that this configuration applies to the entire application.
+
+By default, Spring Security doesn't add this header.
+
+XML:
+
+Adding Expect_CT Header Using Spring Security's XML Configuration
+
+
+<http>
+  <headers>
+    <header name="Expect-CT" value="max-age=3600, enforce"/>
+  </headers>
+</http>
+
+
+Java:
+
+Adding Expect_CT Header Using Spring Security's Java Configuration
+
+
+@EnableWebSecurity
+public class WebSecurityConfig extends
+WebSecurityConfigurerAdapter {
+
+@Override
+protected void configure(HttpSecurity http) throws Exception {
+	http
+	  // ...
+	  .headers()
+	  .addHeaderWriter(new StaticHeadersWriter("Expect-CT","max-age=3600, enforce"));
+}
+
+
+Setting a Header Using Java Filters
+
+
+@Override
+public void doFilter(ServletRequest request, ServletResponse response, FilterChain fchain) throws IOException, ServletException {
+    HttpServletResponse httpResponse = ((HttpServletResponse) response);
+    httpResponse.setHeader("Expect-CT", "max-age=3600, enforce");
+    
+    fchain.doFilter(request, response);
+}
+`
+    },
 }
