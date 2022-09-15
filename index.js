@@ -141,14 +141,14 @@ const mapJsonToFlatData = (data) => {
                     column: r._attributes.Column,
                     severity: r._attributes.Severity,
                     SeverityIndex: r._attributes.SeverityIndex,
-                    snippet: pathNodes && pathNodes.length && pathNodes[0].Snippet.Line.Code._text.trim(),
+                    snippet: pathNodes && pathNodes.length && pathNodes[0].Snippet.Line.Code._text.trim().substring(0, 140),
                     callStack: pathNodes.map(p => ({
-                        fileName: p.FileName && p.FileName._text,
-                        line: p.Line && p.Line._text,
-                        column: p.Line && p.Column._text,
-                        name: p.Name && p.Name._text,
-                        snippet: p.Snippet.Line.Code._text.trim()
-                    }))
+                        fileName: p.FileName && p.FileName._text || '',
+                        line: p.Line && p.Line._text || '',
+                        column: p.Line && p.Column._text || '',
+                        name: p.Name && p.Name._text || '',
+                        snippet: p.Snippet && p.Snippet.Line && p.Snippet.Line.Code && p.Snippet.Line.Code._text.trim().substring(0, 140) || ''
+                    })) || []
                 };
                 return result;
             })

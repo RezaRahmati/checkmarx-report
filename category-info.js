@@ -6,7 +6,7 @@ export const CategoryInfo = {
     },
     418: {
         risk: `
-A malicious user could access other users’ personal information, by simply altering the reference parameter sent to the server. Thus, the malicious user could bypass access controls and access unauthorized records, such as other users accounts, stealing confidential or restricted information.`,
+A malicious user could access other users' personal information, by simply altering the reference parameter sent to the server. Thus, the malicious user could bypass access controls and access unauthorized records, such as other users accounts, stealing confidential or restricted information.`,
         cause: `
 The application accesses user information without filtering by user ID. For example, it may provide information solely by a submitted account ID. The application uses the user input to filter specific records from database tables, which contain sensitive personal information (e.g. user accounts or payment details). Since the application does not filter the records according to any user identifier, nor constrain it to a pre-computed list of acceptable values, a malicious user can easily modify the submitted reference identifier, and thus access unauthorized records.`,
         recommendation: `
@@ -14,7 +14,7 @@ Generic Guidance:
 
     - Enforce authorization checks before providing any access to sensitive data, including the specific object reference. 
     
-    - Explicitly block access to any unauthorized data, especially to other users’ data.
+    - Explicitly block access to any unauthorized data, especially to other users' data.
     
     - If possible, avoid allowing the user to request arbitrary data by simply sending a record ID. For example, instead of having the user send an account ID, the application should look up the account ID for the current authenticated user session.
 
@@ -70,7 +70,7 @@ Note that the apparent database access is encapsulated in an external component 
     },
     426: {
         risk: `
-An attacker that is able to alter the application’s LDAP query with arbitrary data would have control over the results returned from the User Directory server. Most commonly, this would enable an attacker to bypass authentication, or impersonate another user.  
+An attacker that is able to alter the application's LDAP query with arbitrary data would have control over the results returned from the User Directory server. Most commonly, this would enable an attacker to bypass authentication, or impersonate another user.  
 
 Furthermore, this flaw can have various additional effects, depending on the architecture and usage model of the Directory service. Depending on how the application is using LDAP, the attacker could potentially do any of the following:
 
@@ -100,11 +100,11 @@ Consider replacing direct LDAP queries with a higher-level, uniform object model
     },
     427: {
         risk: `
-A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim’s point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
+A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim's point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
 
 The attacker could use social engineering to cause the user to send the website modified input, which will be returned in the requested web page.`,
         cause: `
-The application creates web pages that include untrusted data, whether from user input, the application’s database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
+The application creates web pages that include untrusted data, whether from user input, the application's database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
 
 Note that an attacker can exploit this vulnerability either by modifying the URL, or by submitting malicious data in the user input or other request fields.`,
         recommendation: `
@@ -363,7 +363,7 @@ Use a secure logging mechanism.
         risk: `
 An attacker could use social engineering to get a victim to click a link to the application, so that the user will be immediately redirected to another site of the attacker's choice. An attacker can then craft a destination website to fool the victim; for example - they may craft a phishing website with an identical looking UI as the previous website's login page, and with a similar looking URL, convincing the user to submit their access credentials in the attacker's website. Another example would be a phishing website with an identical UI as that of a popular payment service, convincing the user to submit their payment information.`,
         cause: `
-The application redirects the user’s browser to a URL provided by a tainted input, without first ensuring that URL leads to a trusted destination, and without warning users that they are being redirected outside of the current site. An attacker could use social engineering to get a victim to click a link to the application with a parameter defining another site to which the application will redirect the user’s browser. Since the user may not be aware of the redirection, they may be under the misconception that the website they are currently browsing can be trusted.`,
+The application redirects the user's browser to a URL provided by a tainted input, without first ensuring that URL leads to a trusted destination, and without warning users that they are being redirected outside of the current site. An attacker could use social engineering to get a victim to click a link to the application with a parameter defining another site to which the application will redirect the user's browser. Since the user may not be aware of the redirection, they may be under the misconception that the website they are currently browsing can be trusted.`,
         recommendation: `
 - Ideally, do not allow arbitrary URLs for redirection. Instead, create a mapping from user-provided parameter values to legitimate URLs.
 
@@ -384,7 +384,7 @@ The application redirects the user’s browser to a URL provided by a tainted in
     },
     460: {
         risk: `
-Exposed details about the application’s environment, users, or associated data (for example, stack trace) could enable an attacker to find another flaw and help the attacker to mount an attack. This may also leak sensitive data, e.g. passwords or database fields.`,
+Exposed details about the application's environment, users, or associated data (for example, stack trace) could enable an attacker to find another flaw and help the attacker to mount an attack. This may also leak sensitive data, e.g. passwords or database fields.`,
         cause: `
 The application handles exceptions in an insecure manner, including raw details directly in the error message. This could occur in various ways: by not handling the exception; printing it directly to the output or file; explicitly returning the exception object; or by configuration. These exception details may include sensitive information that could leak to the users due to the occurrence of the runtime error.`,
         recommendation: `
@@ -400,11 +400,11 @@ The application handles exceptions in an insecure manner, including raw details 
     },
     463: {
         risk: `
-A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim’s point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
+A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim's point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
 
 The attacker could use legitimate access to the application to submit modified data, which would be returned as output without proper sanitization. This would then be used to dynamically generate output to a generic output writer - in some scenarios, such as with CGI scripts, this output is sent directly to the user's browser, which would trigger the attack.`,
         cause: `
-The application creates web pages that include untrusted data, whether from user input, the application’s database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
+The application creates web pages that include untrusted data, whether from user input, the application's database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
 
 Note that an attacker can exploit this vulnerability either by modifying the URL, or by submitting malicious data in the user input or other request fields.`,
         recommendation: `
@@ -502,7 +502,7 @@ An attacker could define arbitrary file path for the application to use, potenti
 
     - Deleting critical files, causing denial of service (DoS).`,
         cause: `
-The application uses user input in the file path for accessing files on the application server’s local disk.`,
+The application uses user input in the file path for accessing files on the application server's local disk.`,
         recommendation: `
 - Ideally, avoid depending on dynamic data for file selection.
 
@@ -519,19 +519,19 @@ The application uses user input in the file path for accessing files on the appl
 
 - Explicitly limit the application to use a designated folder that is separate from the applications binary folder.
 
-- Restrict the privileges of the application’s OS user to necessary files and folders. The application should not be able to write to the application binary folder, and should not read anything outside of the application folder and data folder.`
+- Restrict the privileges of the application's OS user to necessary files and folders. The application should not be able to write to the application binary folder, and should not read anything outside of the application folder and data folder.`
     },
     471: {
         risk: `
 If the header setting code is of a vulnerable version, an attacker could:
 
-    - Arbitrarily change the application server’s response header to a victim’s HTTP request by manipulating headers
+    - Arbitrarily change the application server's response header to a victim's HTTP request by manipulating headers
 
-    - Arbitrarily change the application server’s response body by injecting two consecutive line breaks, which may result in Cross-Site Scripting (XSS) attacks
+    - Arbitrarily change the application server's response body by injecting two consecutive line breaks, which may result in Cross-Site Scripting (XSS) attacks
 
-    - Cause cache poisoning, potentially controlling any site’s HTTP responses going through the same proxy as this application.`,
+    - Cause cache poisoning, potentially controlling any site's HTTP responses going through the same proxy as this application.`,
         cause: `
-Since user input is being used in an HTTP response header, an attacker could include NewLine characters to make the header look like multiple headers with engineered content, potentially making the response look like multiple responses (for example, by engineering duplicate content-length headers). This can cause an organizational proxy server to provide the second, engineered response to a victim’s subsequent request; or, if the proxy server also performs response caching, the attacker can send an immediate subsequent request to another site, causing the proxy server to cache the engineered response as a response from this second site and to later serve the response to other users.
+Since user input is being used in an HTTP response header, an attacker could include NewLine characters to make the header look like multiple headers with engineered content, potentially making the response look like multiple responses (for example, by engineering duplicate content-length headers). This can cause an organizational proxy server to provide the second, engineered response to a victim's subsequent request; or, if the proxy server also performs response caching, the attacker can send an immediate subsequent request to another site, causing the proxy server to cache the engineered response as a response from this second site and to later serve the response to other users.
 
 Many modern web frameworks mitigate this issue, by offering sanitization for new line characters in strings inserted into headers by default. However, since many older versions of web frameworks fail to automatically mitigate this issue, manual sanitization of input may be required.`,
         recommendation: `
@@ -547,14 +547,14 @@ Many modern web frameworks mitigate this issue, by offering sanitization for new
 - Make sure to use an up-to-date framework.`
     },
     474: {
-        risk: `A malicious user could access other users’ information. By requesting information directly, such as by an account number, authorization may be bypassed and the attacker could steal confidential or restricted information (for example, a bank account balance), using a direct object reference.`,
+        risk: `A malicious user could access other users' information. By requesting information directly, such as by an account number, authorization may be bypassed and the attacker could steal confidential or restricted information (for example, a bank account balance), using a direct object reference.`,
         cause: `The application provides user information without filtering by user ID. For example, it may provide information solely by a submitted account ID. The application concatenates the user input directly into the SQL query string, without any additional filtering. The application also does not perform any validation on the input, nor constrain it to a pre-computed list of acceptable values.`,
         recommendation: `
 Generic Guidance: 
 
     - Enforce authorization checks before providing any access to sensitive data, including the specific object reference. 
 
-    - Explicitly block access to any unauthorized data, especially to other users’ data.
+    - Explicitly block access to any unauthorized data, especially to other users' data.
 
     - If possible, avoid allowing the user to request arbitrary data by simply sending a record ID. For example, instead of having the user send an account ID, the application should look up the account ID for the current authenticated user session.
 
@@ -568,12 +568,12 @@ Specific Mitigation:
     },
     479: {
         risk: `
-A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim’s point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
+A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim's point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
 
 The attacker could use social engineering to cause the user to send the website modified input, which will be returned in the requested web page.
 `,
         cause: `
-The application creates web pages that include untrusted data, whether from user input, the application’s database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
+The application creates web pages that include untrusted data, whether from user input, the application's database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
 
 Note that an attacker can exploit this vulnerability either by modifying the URL, or by submitting malicious data in the user input or other request fields.`,
         recommendation: `
@@ -618,7 +618,7 @@ The application places user input, which is untrusted data, in the server-side S
     - Format
     - Expected values
 
-- Don’t mix untrusted user input with trusted data.`
+- Don't mix untrusted user input with trusted data.`
     },
     495: {
         risk: `
@@ -784,12 +784,12 @@ Specific Recommendations:
     },
     2719: {
         risk: `
-A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim’s point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
+A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim's point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
 
 An additional risk with DOM XSS is that, unlike reflected or stored XSS, tainted values do not have to go through the server. Since the server is not involved in sanitization of these inputs, server-side validation is not likely to not be aware XSS attacks have been occurring, and any server-side security solutions, such as a WAF, are likely to be ineffective in DOM XSS mitigation.
 `,
         cause: `
-The application creates web pages that include untrusted data, whether from user input, the application’s database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
+The application creates web pages that include untrusted data, whether from user input, the application's database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
 
 When a DOM XSS occurs, it is the client-side code itself that manipulates the local web-page's DOM, extracting data from some client-based storage, introducing potentially malicious content.`,
         recommendation: `
@@ -908,12 +908,12 @@ Do not store secrets, such as passwords, in source code comments.`
     },
     591: {
         risk: `
-A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim’s point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
+A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim's point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
 
 The attacker could use social engineering to cause the user to send the website modified input, which will be returned in the requested web page.
 `,
         cause: `
-The application creates web pages that include untrusted data, whether from user input, the application’s database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
+The application creates web pages that include untrusted data, whether from user input, the application's database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
 
 Note that an attacker can exploit this vulnerability either by modifying the URL, or by submitting malicious data in the user input or other request fields.
 `,
@@ -1102,7 +1102,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
     },
     622: {
         risk: `
-Exposed details about the application’s environment, users, or associated data (for example, stack trace) could enable an attacker to find another flaw and help the attacker to mount an attack. This may also leak sensitive data, e.g. passwords or database fields.`,
+Exposed details about the application's environment, users, or associated data (for example, stack trace) could enable an attacker to find another flaw and help the attacker to mount an attack. This may also leak sensitive data, e.g. passwords or database fields.`,
         cause: `
 The application handles exceptions in an insecure manner, including raw details directly in the error message. This could occur in various ways: by not handling the exception; printing it directly to the output or file; explicitly returning the exception object; or by configuration. These exception details may include sensitive information that could leak to the users due to the occurrence of the runtime error.
 `,
@@ -1205,7 +1205,7 @@ The application places user input, which is untrusted data, in the server-side S
     - Format
     - Expected values
 
-- Don’t mix untrusted user input with trusted data.
+- Don't mix untrusted user input with trusted data.
 
 Java:
 
@@ -1247,12 +1247,12 @@ public void doPost (HttpServletRequest request, HttpServletResponse response) th
     },
     1063: {
         risk: `
-A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim’s point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
+A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim's point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
 
 The attacker could use social engineering to cause the user to send the website modified input, which will be returned in the requested web page.
 `,
         cause: `
-The application creates web pages that include untrusted data, whether from user input, the application’s database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
+The application creates web pages that include untrusted data, whether from user input, the application's database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
 
 Note that an attacker can exploit this vulnerability either by modifying the URL, or by submitting malicious data in the user input or other request fields.
 `,
@@ -1410,7 +1410,7 @@ An attacker could define arbitrary file path for the application to use, potenti
 - Deleting critical files, causing denial of service (DoS).
 `,
         cause: `
-The application uses user input in the file path for accessing files on the application server’s local disk.
+The application uses user input in the file path for accessing files on the application server's local disk.
 `,
         recommendation: `
 - Ideally, avoid depending on dynamic data for file selection.
@@ -1429,7 +1429,7 @@ The application uses user input in the file path for accessing files on the appl
 
 - Explicitly limit the application to use a designated folder that is separate from the applications binary folder.
  
-- Restrict the privileges of the application’s OS user to necessary files and folders. The application should not be able to write to the application binary folder, and should not read anything outside of the application folder and data folder.`
+- Restrict the privileges of the application's OS user to necessary files and folders. The application should not be able to write to the application binary folder, and should not read anything outside of the application folder and data folder.`
     },
     1699: {
         risk: `
@@ -1439,7 +1439,7 @@ An attacker could input a very high value, potentially causing a denial of servi
 The application performs some repetitive task in a loop, and defines the number of times to perform the loop according to user input. A very high value could cause the application to get stuck in the loop and to be unable to continue to other operations.
 `,
         recommendation: `
-Ideally, don’t base a loop on user-provided data. If it is necessary to do so, the user input must be first validated and its range should be limited.
+Ideally, don't base a loop on user-provided data. If it is necessary to do so, the user input must be first validated and its range should be limited.
 
 Java:
 
@@ -1489,7 +1489,7 @@ An attacker could define arbitrary file path for the application to use, potenti
 
 - Deleting critical files, causing denial of service (DoS).`,
         cause: `
-The application uses user input in the file path for accessing files on the application server’s local disk.
+The application uses user input in the file path for accessing files on the application server's local disk.
 `,
         recommendation: `
 - Ideally, avoid depending on dynamic data for file selection.
@@ -1508,7 +1508,7 @@ The application uses user input in the file path for accessing files on the appl
 
 - Explicitly limit the application to use a designated folder that is separate from the applications binary folder.
 
-- Restrict the privileges of the application’s OS user to necessary files and folders. The application should not be able to write to the application binary folder, and should not read anything outside of the application folder and data folder.
+- Restrict the privileges of the application's OS user to necessary files and folders. The application should not be able to write to the application binary folder, and should not read anything outside of the application folder and data folder.
 
 Java:
 
@@ -2166,6 +2166,992 @@ public void doFilter(ServletRequest request, ServletResponse response, FilterCha
     
     fchain.doFilter(request, response);
 }
+`
+    },
+    431: {
+        risk: `
+A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim's point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
+
+An attacker could use legitimate access to the application to submit modified data to the application's data-store. This would then be used to construct the returned web page, triggering the attack.`,
+        cause: `
+The application creates web pages that include untrusted data, whether from user input, the application's database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
+
+In order to exploit this vulnerability, an attacker would load the malicious payload into the data-store, typically via regular forms on other web pages. Afterwards, the application reads this data from the data-store, and embeds it within the web page as displayed for another user.`,
+        recommendation: `
+- Fully encode all dynamic data, regardless of source, before embedding it in output.
+
+- Encoding should be context-sensitive. For example:
+    - HTML encoding for HTML content
+    - HTML Attribute encoding for data output to attribute values
+    - JavaScript encoding for server-generated JavaScript
+
+- It is recommended to use the platform-provided encoding functionality, or known security libraries for encoding output.
+
+- Implement a Content Security Policy (CSP) with explicit whitelists for the application's resources only. 
+
+- As an extra layer of protection, validate all untrusted data, regardless of source (note this is not a replacement for encoding). Validation should be based on a whitelist: accept only data fitting a specified structure, rather than reject bad patterns. Check for:
+    - Data type
+    - Size
+    - Range
+    - Format
+    - Expected values
+
+- In the Content-Type HTTP response header, explicitly define character encoding (charset) for the entire page. 
+
+- Set the HTTPOnly flag on the session cookie for "Defense in Depth", to prevent any successful XSS exploits from stealing the cookie.
+
+- In .NET, when using Razor, consider that Razor is effective at sanitizing some HTML meta-characters, such as <, >, ', ", but ignores characters that may use to evade sanitization in Javascript contexts and result in XSS, such as \, \` and line breaks. Consider Razor as a safe sanitizer only when outputting dynamic data in an HTML context.
+`
+    },
+    435: {
+        risk: `
+Bypassing a client side validation may lead to unexpected and tampered data to the server.`,
+        cause: `
+Relience on client side validation only`,
+        recommendation: `
+It is highly recommended to validate the input in the server side, alongside client side validation.`
+    },
+    2411: {
+        risk: `
+An attacker could use social engineering to get a victim to click a link to the application, so that the user will be immediately redirected to another site of the attacker's choice. An attacker can then craft a destination website to fool the victim; for example - they may craft a phishing website with an identical looking UI as the previous website's login page, and with a similar looking URL, convincing the user to submit their access credentials in the attacker's website. Another example would be a phishing website with an identical UI as that of a popular payment service, convincing the user to submit their payment information.`,
+        cause: `
+The application redirects the user's browser to a URL provided by a tainted input, without first ensuring that URL leads to a trusted destination, and without warning users that they are being redirected outside of the current site. An attacker could use social engineering to get a victim to click a link to the application with a parameter defining another site to which the application will redirect the user's browser. Since the user may not be aware of the redirection, they may be under the misconception that the website they are currently browsing can be trusted.`,
+        recommendation: `
+1- Ideally, do not allow arbitrary URLs for redirection. Instead, create a mapping from user-provided parameter values to legitimate URLs.
+
+2- If it is necessary to allow arbitrary URLs:
+    - For URLs inside the application site, first filter and encode the user-provided parameter, and then either:
+        - Create a white-list of allowed URLs inside the application
+        - Use variables as a relative URL as an absolute one, by prefixing it with the application site domain - this will ensure all redirection will occur inside the domain
+        
+    - For URLs outside the application (if necessary), either:
+        - White-list redirection to allowed external domains by first filtering URLs with trusted prefixes. Prefixes must be tested up to the third slash [/] - scheme://my.trusted.domain.com/, to prevent evasion. For example, if the third slash [/] is not validated and scheme://my.trusted.domain.com is trusted, the URL scheme://my.trusted.domain.com.evildomain.com would be valid under this filter, but the domain actually being browsed is evildomain.com, not domain.com.
+        - For fully dynamic open redirection, use an intermediate disclaimer page to provide users with a clear warning that they are leaving the site.
+
+Source Code Examples
+JavaScript
+
+Open Redirection in JavaScript Relies on User Input to Determine Destination
+
+var location_href = window.location.href;
+var url = new URL(location_href);
+var loc = url.searchParams.get("location"); // If the URL contains the parameter "location=https://www.example.com", the page will redirect to that domain
+window.location = loc;
+
+Convert Relative Location to Absolute Location Under Trusted Domain
+
+var location_href = window.location.href;
+var url = new URL(location_href);
+var loc = url.searchParams.get("location");
+window.location = "https://www.example.com/" + loc; // Assume example.com is a trusted domain
+
+Whitelist Trusted Domains - Bad Whitelist
+
+var location_href = window.location.href;
+var url = new URL(location_href);
+var loc = url.searchParams.get("location");
+if (loc.startsWith("https://trusted1.example.com") || loc.startsWith("https://trusted2.example.com")) {
+    window.location = loc; 	/*  If an attacker creates a malicious website, such as by purchasing the domain evil.com and creating
+                                    the subdomain https://trusted1.example.com.evil.com, they will be able to bypass this whitelist */
+}
+
+Whitelist Trusted Domains
+
+var location_href = window.location.href;
+var url = new URL(location_href);
+var loc = url.searchParams.get("location");
+if (loc.startsWith("https://trusted1.example.com/") || loc.startsWith("https://trusted2.example.com/")) {
+    window.location = loc; // Assume trusted1.example.com and trusted2.example.com are trusted domains; top level domain cannot be manipulate to bypass this check
+}                 
+`
+    },
+    2415: {
+        risk: `
+A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim's point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
+
+An additional risk with DOM XSS is that, unlike reflected or stored XSS, tainted values do not have to go through the server. Since the server is not involved in sanitization of these inputs, server-side validation is not likely to not be aware XSS attacks have been occurring, and any server-side security solutions, such as a WAF, are likely to be ineffective in DOM XSS mitigation.`,
+        cause: `
+The application creates web pages that include untrusted data, whether from user input, the application's database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
+
+When a DOM XSS occurs, it is the client-side code itself that manipulates the local web-page's DOM, and introduces malicious content.`,
+        recommendation: `
+- Fully encode all dynamic data, regardless of source, before embedding it in output.
+
+- Encoding should be context-sensitive. For example:
+
+- HTML encoding for HTML content
+
+- HTML Attribute encoding for data output to attribute values
+
+- JavaScript encoding for server-generated JavaScript
+
+- It is recommended to use the platform-provided encoding functionality, or known security libraries for encoding output.
+
+- Implement a Content Security Policy (CSP) with explicit whitelists for the application's resources only. 
+
+- As an extra layer of protection, validate all untrusted data, regardless of source (note this is not a replacement for encoding). Validation should be based on a whitelist: accept only data fitting a specified structure, rather than reject bad patterns. Check for:
+
+    - Data type
+    - Size
+    - Range
+    - Format
+    - Expected values
+
+- In the Content-Type HTTP response header, explicitly define character encoding (charset) for the entire page. 
+
+- Set the HTTPOnly flag on the session cookie for "Defense in Depth", to prevent any successful XSS exploits from stealing the cookie.
+
+Source Code Examples
+JavaScript
+
+DOM XSS in img Attribute
+
+var url = new URL(window.location.href);
+var imgsrc = url.searchParams.get("imageLocation");
+document.write('<img id="myImage" src=' + imgsrc +' ></img>'); // The payload "imageLocation=1 onerror=alert(1)" will result in an alert prompt, demonstrating XSS
+
+Use Javascript to Construct DOM Elements, Rather Than Manually Concatenating Values
+
+var url = new URL(window.location.href);
+var imgsrc = url.searchParams.get("imageLocation");
+var myImg = document.createElement("IMG");
+myImg.src = imgsrc;
+someDiv.append(myImg);
+
+
+DOM XSS When Using "eval()" to Parse JSON in Javascript
+
+var url = new URL(window.location.href);
+var val = url.searchParams.get("val");
+var json = '[{ "val": "\${val}" }]';
+var obj = eval(json); // The payload json=","a":alert(1),"b":" will result in an alert prompt, demonstrating XSS
+
+Replacing "eval()" with "JSON.parse()" to Avoid XSS
+
+var url = new URL(window.location.href);
+var val = url.searchParams.get("val");
+var json = '[{ "val": "\${val}" }]';
+var obj =  JSON.parse(json); // JSON.parse() does not eval JS code
+
+DOM XSS in iFrame "src" Attribute
+
+var url = new URL(window.location.href);
+var iframeLocation = url.searchParams.get("iframeLocation");
+document.getElementById("myFrame").src = iframeLocation; // The payload "iframeLocation=javascript:alert(1)" will result in an alert prompt, demonstrating XSS. This is also vulnerable to open redirection.
+
+Prepending iFrame "src" Attribute to Prevent Malicious URI Schemes
+
+var url = new URL(window.location.href);
+var iframeLocation = url.searchParams.get("iframeLocation");
+document.getElementById("myFrame").src = "/example/"+iframeLocation; // Prepending iframeLocation prevents changing the URI scheme to "javascript:", mitigating XSS
+`
+    },
+    2600: {
+        risk: `
+It is often possible to retrieve and view the application source code. For web applications, it is even simpler to "View Source" in the user's browser. Thus, a malicious user can steal these passwords, and use them to impersonate whoever they belong to. It is not known if these are valid, current passwords, nor if they are user passwords or for backend systems, like a database.`,
+        cause: `
+A well-developed application will have it's source code well commented. Often, programmers will leave deployment information in comments, or retain debugging data that was used during development. These comments often contain secret data, such as passwords. These password comments are stored in the source code in perpetuity, and are not protected.`,
+        recommendation: `
+Do not store secrets, such as passwords, in source code comments.
+
+Source Code Examples
+JavaScript
+
+Old Code Retained In Comment With Password
+
+function login() {
+    // send credentials to server instead of reading from database
+    // constring = "Initial Catalog=mytest;User Id=sa;Pwd=mypass;";
+    var creds = "username=" + txtUsername.text + "&password=" + txtPassword.text;    
+    var resp = sendToServer("/login", creds);
+    return (resp == "success");
+}
+
+
+Passwords Cleaned from Comments
+
+function login() {
+    // send credentials to server instead of reading from database
+    var creds = "username=" + txtUsername.text + "&password=" + txtPassword.text;    
+    var resp = sendToServer("/login", creds);
+    return (resp == "success");
+}
+`
+    },
+    2601: {
+        risk: `
+A user's personal information could be stolen by a malicious programmer, or an attacker that intercepts the data.`,
+        cause: `
+The application sends user information, such as passwords, account information, or credit card numbers, outside the application, such as writing it to a local text or log file or sending it to an external web service.`,
+        recommendation: `
+- Personal data should be removed before writing to logs or other files.
+- Review the need and justification of sending personal data to remote web services.
+
+Source Code Examples
+JavaScript
+
+Password is Shown on Screen After Entry
+
+function submitNewCredentials () {
+	var username = $('#userame').val();
+	var oldPassword = $('#oldPassword').val();
+	var newPassword = $('#newpassword').val();
+	$('#notification_area').text("Your new password is " + password);
+  	// Submit password
+}
+        `
+    },
+    2618: {
+        risk: `
+Embedding an iframe whose contents are from a remote source without proper sandboxing may allow the iframe's contents to run malicious scripts resulting in Cross-Site Scripting (XSS), redirecting the embedding page to a malicious website and more.`,
+        cause: `
+Embedding an iframe from an untrusted and remote source is often a liability, making the embedding page's security hinge on an external, potentially untrustworthy resource. This is particularly prevalent when iframes are used to display advertisements from a third-party provider. If that resource becomes compromised to serve malicious content, this may adversely affect the security of the embedding page along with it; to that end - a iframe sandboxing feature was defined to revoke and restrict many of the iframe's capabilities to limit the risk of having external embedded content.
+
+Note that simply adding the sandbox attribute to an iframe element will enable the sandbox; however, it is possible to add flags that bypass the sandbox's defenses (such as allow-scripts). These flags can be abused to the point where an iframe sandbox with specific configurations is less secure than an iframe without a sandbox at all (such as with the allow-same-origin directive).`,
+        recommendation: `
+- Review the need to include remote content in the web-page; remove such functionality where possible to decrease attack surface
+- Where iframes are used to display remote content - always sandbox them to their required functionality only
+- Avoid allowing scripts from remote untrusted websites
+
+Source Code Examples
+JavaScript
+
+HTML iframe Without a Sandbox
+
+<iframe src="https://untrusted.example.com/content.html"></iframe>
+
+HTML sandboxed iframe
+
+<iframe src="https://untrusted.example.com/content.html" sandbox ></iframe>
+
+`
+    },
+    2957: {
+        risk: `
+An attacker that has access to a user's client device, will be able to retrieve stored information, such as user's sensitive personal data (PII) from the client storage. Use of this storage will also increase exposure of its content to theft via other means, such as cross-site scripting (XSS). This would be detrimental to the user and harm their privacy, and could cause damage to reputation, financial loss, and even lead to identity theft.`,
+        cause: `
+The application stores data, which may contain PII (Personally Identifiable Information), on the client browser or device. The application uses insecure forms of storage, which do not inherently provide any protection from unauthorized access. This data is not encrypted or sanitized before being stored, thus a malicious entity with access to the device or browser could easily retrieve the user's data.`,
+        recommendation: `
+- Avoid storing sensitive data, such as PII, on unprotected clients. 
+- If PII or other sensitive data must be stored on the client, ensure it is encrypted or otherwise protected.
+
+Source Code Examples
+JavaScript
+
+User Data Stored in Local Storage
+
+function storeUserData() { 
+	var accountId = getUserAccount();
+	localStorage.setItem('accountId', accountId);
+}
+
+User Data in Globals instead of Persistent Storage
+
+var globalAccountId; 
+
+function storeUserData() { 
+	var accountId = getUserAccount();
+	globalAccountId = accountId; // Data is stored in DOM, but not persistently
+}
+`
+    },
+    2961: {
+        risk: `
+Sensitive information could be exposed, or malware could steal the information.`,
+        cause: `
+The application writes personal information, such as passwords or account information, to external media such as an SD card or to a log file, or, the application sends contacts or GPS location outside the device (over HTTP, email, or SMS). This can expose sensitive information.`,
+        recommendation: `
+- Ideally, don't send contacts or GPS location out of the phone at all. If it is necessary to do so, send it over an encrypted channel such as HTTPS.
+- Ideally, don't write sensitive data to log files or to external media. If it is necessary to do so, the data should be encrypted first`
+    },
+    2987: {
+        risk: `
+A successful XSS exploit would allow an attacker to rewrite web pages and insert malicious scripts which would alter the intended output. This could include HTML fragments, CSS styling rules, arbitrary JavaScript, or references to third party code. An attacker could use this to steal users' passwords, collect personal data such as credit card details, provide false information, or run malware. From the victim's point of view, this is performed by the genuine website, and the victim would blame the site for incurred damage.
+
+An attacker could use legitimate access to the application to submit modified data to the application's data-store. This would then be used to construct the returned web page, triggering the attack.`,
+        cause: `
+The application creates web pages that include untrusted data, whether from user input, the application's database, or from other external sources. The untrusted data is embedded directly in the page's HTML, causing the browser to display it as part of the web page. If the input includes HTML fragments or JavaScript, these are displayed too, and the user cannot tell that this is not the intended page. The vulnerability is the result of directly embedding arbitrary data without first encoding it in a format that would prevent the browser from treating it like HTML or code instead of plain text.
+
+In order to exploit this vulnerability, an attacker would load the malicious payload into the data-store, typically via regular forms on other web pages. Afterwards, the application reads this data from the data-store, and embeds it within the web page as displayed for another user.
+`,
+        recommendation: `
+- Fully encode all dynamic data, regardless of source, before embedding it in output.
+
+- Encoding should be context-sensitive. For example:
+
+- HTML encoding for HTML content
+
+- HTML Attribute encoding for data output to attribute values
+
+- JavaScript encoding for server-generated JavaScript
+
+- It is recommended to use the platform-provided encoding functionality, or known security libraries for encoding output.
+
+- Implement a Content Security Policy (CSP) with explicit whitelists for the application's resources only. 
+
+- As an extra layer of protection, validate all untrusted data, regardless of source (note this is not a replacement for encoding). Validation should be based on a whitelist: accept only data fitting a specified structure, rather than reject bad patterns. Check for:
+
+    - Data type
+    - Size
+    - Range
+    - Format
+    - Expected values
+
+- In the Content-Type HTTP response header, explicitly define character encoding (charset) for the entire page. 
+
+- Set the HTTPOnly flag on the session cookie for "Defense in Depth", to prevent any successful XSS exploits from stealing the cookie.
+
+Source Code Examples
+JavaScript
+
+No Input Sanitization while Outputting Data from Database to HTML Context in Express.js
+
+app.get(showAddressURL, function(req, res) {
+	var id = req.query.userid;
+	connection.query('SELECT * FROM users WHERE id=?',[id], function(err,results) {
+		var user = results[0];
+		if (user)
+			res.send("Address: " + user.address); // Setting the address field to <script>alert(1)</script> will result in an alert prompt, demonstrating stored XSS
+      	else
+          	res.send("Address not found.");
+	});
+});
+
+Using a Template Engine, Such as Handlebars, to Output Encoded Data from Database to An HTML Context
+
+app.get(showAddressURL, function(req, res) {
+	var id = req.query.id;
+	connection.query('SELECT * FROM users WHERE id=?',[id], function(err,results) {
+		var user = results[0];
+      	if (user)
+          	res.render('address', {address: user.address})
+      	else
+          	res.render('addressNotFoundErrorPage');
+	});
+});
+
+// In 'address' View code
+Address is {{address}}
+
+`
+    },
+    3483: {
+        risk: `
+Request validation attempts to automatically identify potentially malicious content in user-provided inputs; if a potentially malicious input is detected, the server rejects the entire request and throws an exception. Disabling this additional layer of defense may put the application at risk from malicious input, which may lead to cross-site scripting attacks, HTML injection, and more.`,
+        cause: `
+Since request validation is promptly blocks multiple meta-characters, ways to locally or globally disabling request validations have been introduced. However, using these overrides may leave the application exposed to attack.`,
+        recommendation: `
+- Always consider the need and weigh the risks when explicitly disabling request validation. If disabling of request validation is required, consider the risks and outputs of any unvalidated inputs, and implement a different input validation solution appropriate to the output's context, as required.
+
+- Note that Request Validation does not constitute as a sanitizer against cross-site scripting (XSS), HTML injection or any other form of attack. Request Validation is simply an additional layer to assist in mitigation of these attacks, and it is recommended to have it enabled.
+
+Source Code Examples
+CSharp
+
+Specific Page where Request Validation is Disabled
+
+<%@ Page Language="C#" MasterPageFile="~/Site.master" CodeFile="Default.aspx.cs" Inherits="_Default" validateRequest="false" %>
+
+Request Validation Disabled for Entire Application in Configuration
+
+<configuration>
+  <system.web>
+    <pages validateRequest="false" />
+  </system.web>
+</configuration>
+`
+    },
+    3637: {
+        risk: `
+Cookies that contain the user's session identifier, and other sensitive application cookies, should be sent to the server over a secure network communication (HTTPS) in order to prevent attackers from sniffing the traffic and stealing those cookies. Unless the web application explicitly prevents this by using the "secure" cookie flag, these cookies will also be sent over insecure traffic, which can lead to session hijacking and impersonation.`,
+        cause: `
+The web application framework by default does not set the "secure" flag for the application's sessionID cookie, and other sensitive application cookies. Likewise, the application does not explicitly use the "secure" cookie flag, allowing them to be sent in plaintext over an insecure session.`,
+        recommendation: `
+- Always set the "secure" flag for any sensitive server-side cookies.
+
+- If the application explicitly handles cookies directly in application code, set the "secure" flag for sensitive cookies set by the application.
+
+- Configure the application to always use "secure" cookies, in the site-wide configuration file.
+
+- Enable the Secure flag or use the relevant Set-Secure API in the code.
+
+Source Code Examples
+Java
+
+Web.xml Configuration File with Secure Cookies:
+
+<session-config>
+ <cookie-config>
+  <secure>true</secure>
+ </cookie-config>
+</session-config>
+
+
+Explicit Cookie Handling in Code:
+
+Cookie newCookie = new Cookie("name","value");
+newCookie.setSecure(true);
+
+
+ASP
+
+Web.config Configuration File with Secure Cookies:
+
+<system.web>
+ <httpCookies requireSSL="true" ></httpCookies>
+</system.web>
+
+
+CSharp
+
+Explicit Cookie Handling in Code:
+
+HttpCookie cookie = new HttpCookie('sessionid');
+cookie.Secure = True;
+cookie.Value = GetNewSessionToken();
+`
+    },
+    3705: {
+        risk: `
+An attacker could use social engineering to get a victim to click a link to the application, so that the user will be immediately redirected to another site of the attacker's choice. An attacker can then craft a destination website to fool the victim; for example - they may craft a phishing website with an identical looking UI as the previous website's login page, and with a similar looking URL, convincing the user to submit their access credentials in the attacker's website. Another example would be a phishing website with an identical UI as that of a popular payment service, convincing the user to submit their payment information.`,
+cause: `
+The application redirects the user's browser to a URL provided by a tainted input, without first ensuring that URL leads to a trusted destination, and without warning users that they are being redirected outside of the current site. An attacker could use social engineering to get a victim to click a link to the application with a parameter defining another site to which the application will redirect the user's browser. Since the user may not be aware of the redirection, they may be under the misconception that the website they are currently browsing can be trusted.`,
+recommendation: `
+1- Ideally, do not allow arbitrary URLs for redirection. Instead, create a mapping from user-provided parameter values to legitimate URLs.
+
+2- If it is necessary to allow arbitrary URLs:
+    - For URLs inside the application site, first filter and encode the user-provided parameter, and then either:
+        - Create a white-list of allowed URLs inside the application
+        - Use variables as a relative URL as an absolute one, by prefixing it with the application site domain - this will ensure all redirection will occur inside the domain
+        
+    - For URLs outside the application (if necessary), either:
+        - White-list redirection to allowed external domains by first filtering URLs with trusted prefixes. Prefixes must be tested up to the third slash [/] - scheme://my.trusted.domain.com/, to prevent evasion. For example, if the third slash [/] is not validated and scheme://my.trusted.domain.com is trusted, the URL scheme://my.trusted.domain.com.evildomain.com would be valid under this filter, but the domain actually being browsed is evildomain.com, not domain.com.
+        - For fully dynamic open redirection, use an intermediate disclaimer page to provide users with a clear warning that they are leaving the site.
+ 
+Source Code Examples
+
+JavaScript
+
+Open Redirection in JavaScript Relies on User Input to Determine Destination
+
+
+var location_href = window.location.href;
+var url = new URL(location_href);
+var loc = url.searchParams.get("location"); // If the URL contains the parameter "location=https://www.example.com", the page will redirect to that domain
+window.location = loc;
+
+
+Convert Relative Location to Absolute Location Under Trusted Domain
+
+
+var location_href = window.location.href;
+var url = new URL(location_href);
+var loc = url.searchParams.get("location");
+window.location = "https://www.example.com/" + loc; // Assume example.com is a trusted domain
+
+
+Whitelist Trusted Domains - Bad Whitelist
+
+
+var location_href = window.location.href;
+var url = new URL(location_href);
+var loc = url.searchParams.get("location");
+if (loc.startsWith("https://trusted1.example.com") || loc.startsWith("https://trusted2.example.com")) {
+    window.location = loc; 	/*  If an attacker creates a malicious website, such as by purchasing the domain evil.com and creating
+                                    the subdomain https://trusted1.example.com.evil.com, they will be able to bypass this whitelist */
+}
+
+
+Whitelist Trusted Domains
+
+
+var location_href = window.location.href;
+var url = new URL(location_href);
+var loc = url.searchParams.get("location");
+if (loc.startsWith("https://trusted1.example.com/") || loc.startsWith("https://trusted2.example.com/")) {
+    window.location = loc; // Assume trusted1.example.com and trusted2.example.com are trusted domains; top level domain cannot be manipulate to bypass this check
+}
+        
+`
+    },
+    3772: {
+        risk: `
+All variables stored by the application in unencrypted memory can potentially be retrieved by an unauthorized user, with privileged access to the machine. For example, a privileged attacker could attach a debugger to the running process, or retrieve the process's memory from the swapfile or crash dump file. Once the attacker finds the user passwords in memory, these can be reused to easily impersonate the user to the system.`,
+        cause: `
+String variables are immutable - in other words, once a string variable is assigned, its value cannot be changed or removed. Thus, these strings may remain around in memory, possibly in multiple locations, for an indefinite period of time until the garbage collector happens to remove it. Sensitive data, such as passwords, will remain exposed in memory as plaintext with no control over their lifetime.
+
+While it may still be possible to retrieve data from memory, even if it uses a mutable container that is cleared, or retrieve a decryption key and decrypt sensitive data from memory - layering sensitive data with these types of protection would significantly increase the required effort to do so. By setting a high bar for retrieving sensitive data from memory, and reducing the amount and exposure of sensitive data in memory, an adversary is significantly less likely to succeed in obtaining valuable data.
+        `,
+        recommendation: `
+When it comes to avoiding Heap Inspection, it is important to note that, given any read access to memory or a memory dump of an application, it is always likely to disclose some sensitive data to an adversary - these suggestions are part of defense-in-depth principles for protection of sensitive data in cases where such memory read access is successfully obtained. These recommendations will enable significant reduction in the lifespan and exposure of sensitive data in memory; however - given enough time, effort and unlimited access to memory, they will only go so far in protecting sensitive data being used by the application. The only way to handle Heap Inspection issues is to minimize and reduce data exposure, and obscure it in memory wherever possible.
+    - Do not store sensitive data, such as passwords or encryption keys, in memory in plain-text, even for a short period of time. 
+    - Prefer to use specialized classes that store encrypted data in memory to ensure it cannot be trivially retrieved from memory.
+    - When required to use sensitive data in its raw form, temporarily store it in mutable data types, such as byte arrays, to reduce readability from memory, and then promptly zeroize the memory locations, to reduce exposure duration of this data while in memory.        
+    - Ensure that memory dumps are not exchanged with untrusted parties, as even by ensuring all of the above - it may still be possible to reverse-engineer encrypted containers, or retrieve bytes of sensitive data from memory and rebuild it.        
+    - In .NET, instead of storing passwords in immutable strings, prefer to use an encrypted memory object, such as SecureString or ProtectedData.
+
+Source Code Examples
+CSharp
+
+Using String to Store a Password
+
+    class Heap_Inspection
+    {
+        private static string password
+        {
+            get;
+            set;
+        }
+
+        public void setPassword(string newPassword)
+        {
+            password = newPassword;
+        }
+
+        public string getPassword()
+        {
+            return password;
+        }
+    }
+
+
+Using SecureString to Store a Password
+
+    class Heap_Inspection_Fixed
+    {
+        private static SecureString password
+        {
+            get;
+            set;
+        }
+
+        public void setPassword(SecureString newPassword)
+        {
+            password = newPassword;
+        }
+
+        public SecureString getPassword()
+        {
+            return password;
+        }
+    }
+    
+`
+    },
+    3908: {
+        risk: `
+An externally imported Javascript file may leave users vulnerable to attack - if the Javascript's host is compromised, if communications with the host are intercepted or if the host itself is not trustworthy, then the contents of the Javascript file may change to have malicious code, which could result in a Cross-Site Scripting (XSS) attack.`,
+        cause: `
+Javascript files can be imported dynamically from remote hosts when they are embedded into HTML. However, this reliance on a remote host for these scripts may diminish security, as web-application's users are only ever as secure as the remote host serving these Javascript files.`,
+        recommendation: `
+Where possible, host all script files locally, rather than remotely. Ensure that locally hosted 3rd party script files are constantly updated and maintained.
+
+Source Code Examples
+JavaScript
+
+Remote Importation of A Script File
+
+<script src="https://example.com/scripts/jquery.js" />
+
+Local Importation of A Script File
+
+<script src="/scripts/jquery.js" />
+        `
+    },
+    3933: {
+        risk: `
+Hardcoded passwords expose the application to password leakage. If an attacker gains access to the source code, she will be able to steal the embedded passwords, and use them to impersonate a valid user. This could include impersonating end users to the application, or impersonating the application to a remote system, such as a database or a remote web service. 
+Once the attacker succeeds in impersonating the user or application, she will have full access to the system, and be able to do anything the impersonated identity could do.`,
+        cause: `
+The application codebase has string literal passwords embedded in the source code. This hardcoded value is used either to compare to user-provided credentials, or to authenticate downstream to a remote system (such as a database or a remote web service).  
+
+An attacker only needs to gain access to the source code to reveal the hardcoded password. Likewise, the attacker can reverse engineer the compiled application binaries, and easily retrieve the embedded password. Once found, the attacker can easily use the password in impersonation attacks, either directly on the application or to the remote system. 
+
+Furthermore, once stolen, this password cannot be easily changed to prevent further misuse, unless a new version of the application is compiled. Moreover, if this application is distributed to numerous systems, stealing the password from one system automatically allows a class break in to all the deployed systems.`,
+        recommendation: `
+- Do not hardcode any secret data in source code, especially not passwords. 
+
+- In particular, user passwords should be stored in a database or directory service, and protected with a strong password hash (e.g. bcrypt, scrypt, PBKDF2, or Argon2). Do not compare user passwords with a hardcoded value. 
+
+- Sytem passwords should be stored in a configuration file or the database, and protected with strong encryption (e.g. AES-256). Encryption keys should be securely managed, and not hardcoded.
+
+Source Code Examples
+JavaScript
+
+Hardcoded Account Password
+
+
+var username = request.body.username;
+var password = request.body.password;
+var admin_username = "admin";
+var admin_password = "5up3r53cr3t";
+if (username == admin_username && password == admin_password) {
+	// Authenticate
+}
+else {
+  	// Reject
+}
+
+
+Authenticating by Querying the Database with Credentials
+
+
+var username = request.body.username;
+var password = secureHashImplementation(request.body.password);
+
+connection.query('SELECT * FROM users WHERE name=? AND hashed_password=?',[username, password], function(err,results) {
+  	if (error) {
+      	// handle error
+    }
+	if (results.length == 1) {
+    	// Authenticate
+    }
+});
+
+`
+    },
+    3934: {
+        risk: `
+- Cookies that contain the user's session identifier, and other sensitive application cookies, are typically accessible by client-side scripts, such as JavaScript. Unless the web application explicitly prevents this using the "httpOnly" cookie flag, these cookies could be read and accessed by malicious client scripts, such as Cross-Site Scripting (XSS). This flag would mitigate the damage done in case XSS vulnerabilities are discovered, according to Defense in Depth.
+- Likewise, sensitive cookies could be exposed by being sent over unprotected HTTP protocol, allowing attackers to sniff the users' requests and impersonate them to the application.`,
+        cause: `
+- The web application framework, by default, does not set the "httpOnly" flag for the application's sessionid cookie and other sensitive application cookies. Likewise, the application does not explicitly use the "httpOnly" cookie flag, thus allowing client scripts to access the cookies by default.
+- Similarly, cookies that lack the "secure" flag will be automatically sent by the browser to the web server, regardless of the safety of the underlying protocol, such as unprotected HTTP. Cookies that are flagged with the "secure" attribute will only be sent over a secure HTTPS connection.`,
+        recommendation: `
+- Always set the "httpOnly" flag for any sensitive server-side cookie.
+- It is highly recommended to implement HTTP Strict Transport Security (HSTS) in order to ensure that the cookie will be sent over a secured channel.
+- Explicitly set the "httpOnly" flag for each cookie set by the application.
+- Configure and set all sensitive cookies to be created with the "secure" attribute.
+
+Source Code Examples
+JavaScript
+
+Setting Cookie with Express
+
+var express = require('express');
+var app = express();
+
+app.use(express.cookieParser());
+
+app.get('/', function(req, res) {
+    res.cookie('DepartmentID', getUserDept());
+    res.send(getUserPage());
+});
+
+app.listen(SERVER_PORT);
+
+
+Using Express for Secure Cookies
+
+var express = require('express');
+var app = express();
+
+app.use(express.cookieParser());
+
+app.get('/', function(req, res) {
+    res.cookie('DepartmentID', getUserDept(), 
+                {maxAge: 900000, 
+                path: APP_ROOT, 
+                secure: true, 
+                httpOnly: true });
+    
+    res.send(getUserPage());
+});
+
+app.listen(SERVER_PORT);
+`
+    },
+    4033: {
+        risk: `
+The Content-Security-Policy header enforces that the source of content, such as the origin of a script, embedded (child) frame, embedding (parent) frame or image, are trusted and allowed by the current web-page; if, within the web-page, a content's source does not adhere to a strict Content Security Policy, it is promptly rejected by the browser. Failure to define a policy may leave the application's users exposed to Cross-Site Scripting (XSS) attacks, Clickjacking attacks, content forgery and more.`,
+        cause: `
+The Content-Security-Policy header is used by modern browsers as an indicator for trusted sources of content, including media, images, scripts, frames and more. If these policies are not explicitly defined, default browser behavior would allow untrusted content.
+The application creates web responses, but does not properly set a Content-Security-Policy header.`,
+        recommendation: `
+Explicitly set the Content-Security-Policy headers for all applicable policy types (frame, script, form, script, media, img etc.) according to business requirements and deployment layout of external file hosting services. Specifically, do not use a wildcard, '*', to specify these policies, as this would allow content from any external resource.
+
+The Content-Security-Policy can be explicitly defined within web-application code, as a header managed by web-server configurations, or within <meta> tags in the HTML <head> section.
+        
+        Source Code Examples
+JavaScript
+
+Setting The CSP Header Explicitly
+
+app.use(function(req, res, next) {
+    res.setHeader("Content-Security-Policy", "script-src 'self'");
+    return next();
+});
+`
+    },
+    4653: {
+        risk: `
+Unsafe binding of objects to requests may expose unintended setters to remote attackers, allowing them to directly access objects, attributes and even objects within objects via broadly binding setters to an incoming request.`,
+        cause: `
+Using object binding methods, built into MVC controllers, exposes all public setters to allow easily wiring values submitted by users in forms, to the objects and attributes they are intended to create or alter. This approach allows application code to skip the boilerplate code of having to parse requests for user values, and manually setting them individually into objects being created.
+
+However, this may also pose a significant risk to application logic and flow - naively mass binding objects in such a manner may also accidentally expose unintended objects or attributes, which could then be tampered with by an attacker.`,
+        recommendation: `
+- Review all mass-assigned objects to ensure no unintended public setters or constructors are unintentionally exposed by this approach.
+- Ensure that, where required, access to attributes and objects is correctly restricted by application code.
+- Consider transitioning away from object binding methods to a more granular approach where values are only ever explicitly set, to prevent accidentally exposing unintended values to being implicitly altered.
+
+Source Code Examples
+
+Java
+
+Mass Assignment via RequestMapping with a Model as an Input
+
+//Item:
+public class Item {
+	private String id;
+    private String itemName;
+    private String price;
+    private String shippingAddress;
+    private User buyer;
+	//Public setters/getters:
+    [..]
+}
+//User:
+public class User {
+	private String id;
+    private String userName;
+    private String password;
+	//Public setters/getters:
+    [..]
+}
+
+//ItemController:
+@RequestMapping(value="saveItem", method = RequestMethod.POST)
+	public String saveItem(@ModelAttribute("country") Item item, ModelMap model) {
+		db.save(item); //If the parameter "price=0" is added, the assigned price of item is 0.
+      				   //If the parameter "user.password=hacked!!" is added, the password for the user is changed to "hacked!!".
+		return "success";
+	}	
+
+`
+    },
+    5337: {
+        risk: `
+In .NET applications, web.config files often contain sensitive information such as service account login credentials or connection strings; this potentially sensitive data must be stored in a secure, encrypted container to prevent attackers with local file-system access from retrieving it.`,
+        cause: `
+The application utilizes a web.config file, which is stored locally on the file-system, and does not encrypt all sensitive elements within it.`,
+        recommendation: `
+Ensure sensitive contents of web.config files are encrypted at rest. For a best practice approach, utilize .NET aspnet_regiis.exe's tool to encrypt sensitive elements within web.config, so that they are read by the web-server, but cannot be plainly read from the file.
+        
+Source Code Examples
+ASP
+
+web.config File with Plain-Text Sensitive Content
+
+<configuration>
+   <connectionStrings>
+      <add name="ServiceName" connectionString="[connection strings]" />
+   </connectionStrings>
+   <system.web>
+     <machineKey validationKey="[validation key]" decryptionKey="[decryption key]" />
+   </system.web>
+</configuration>
+
+
+web.config File with Encrypted Sensitive Content
+
+<configuration>
+   <connectionStrings configProtectionProvider="RsaProtectedConfigurationProvider">
+      <EncryptedData Type="http://www.w3.org/2001/04/xmlenc#Element"
+         xmlns="http://www.w3.org/2001/04/xmlenc#">
+         <EncryptionMethod Algorithm="[Encryption Algorithm]" />
+         <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+            <EncryptedKey xmlns="http://www.w3.org/2001/04/xmlenc#">
+               <EncryptionMethod Algorithm="[Encryption Algorithm]" />
+               <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+                  <KeyName>RSA Key
+                  </KeyName>
+               </KeyInfo>
+               <CipherData>[Cipher Value]</CipherValue>
+               </CipherData>
+            </EncryptedKey>
+         </KeyInfo>
+         <CipherData>[Cipher Value]</CipherValue>
+         </CipherData>
+      </EncryptedData>
+   </connectionStrings>
+   <system.web>
+     <machineKey configProtectionProvider="RsaProtectedConfigurationProvider">
+       <EncryptedData Type="http://www.w3.org/2001/04/xmlenc#Element" xmlns="http://www.w3.org/2001/04/xmlenc#">
+         <EncryptionMethod Algorithm="[Encryption Algorithm]" />
+         <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+           <EncryptedKey xmlns="http://www.w3.org/2001/04/xmlenc#">
+             <EncryptionMethod Algorithm="[Encryption Algorithm]" />
+             <KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+               <KeyName>RSA Key
+               </KeyName>
+             </KeyInfo>
+             <CipherData>
+               <CipherValue>[Cipher Value]</CipherValue>
+             </CipherData>
+           </EncryptedKey>
+         </KeyInfo>
+         <CipherData>
+           <CipherValue>[Cipher Value]</CipherValue>
+         </CipherData>
+       </EncryptedData>
+     </machineKey>
+   </system.web>
+</configuration>
+`
+    },
+    5339: {
+        risk: `
+Storing data in clear text may allow users with access to the server to extract sensitive information`,
+        cause: `
+Database columns are stored in clear text which means, it would be pretty easy to read the data if one has access to the DB server. Encrypting The columns prior storing the data will ensure that confidentiality will sustained and will not be at risk.`,
+        recommendation: `
+If the DBMS in use support native column encryption, these facilities should be used, to protect the stored data.
+        
+Source Code Examples
+CSharp
+
+Column Encryption Setting is enable in the connectionString
+
+
+string connectionString = "Data Source=server63; Initial Catalog=Clinic; Integrated Security=true; Column Encryption Setting=enabled";
+SqlConnection connection = new SqlConnection(connectionString);
+
+
+Another way to enable Column Encryption Setting
+
+
+SqlConnectionStringBuilder strbldr = new SqlConnectionStringBuilder();
+strbldr.DataSource = "server63";
+strbldr.InitialCatalog = "Clinic";
+strbldr.IntegratedSecurity = true;
+strbldr.ColumnEncryptionSetting = SqlConnectionColumnEncryptionSetting.Enabled;
+SqlConnection connection = new SqlConnection(strbldr.ConnectionString);
+`
+    },
+    5608: {
+        risk: `
+The Content-Security-Policy header enforces that the source of content, such as the origin of a script, embedded (child) frame, embedding (parent) frame or image, are trusted and allowed by the current web-page; if, within the web-page, a content's source does not adhere to a strict Content Security Policy, it is promptly rejected by the browser. Failure to define a policy may leave the application's users exposed to Cross-Site Scripting (XSS) attacks, Clickjacking attacks, content forgery and more.
+        `,
+        cause: `
+The Content-Security-Policy header is used by modern browsers as an indicator for trusted sources of content, including media, images, scripts, frames and more. If these policies are not explicitly defined, default browser behavior would allow untrusted content.`,
+        recommendation: `
+Explicitly set the Content-Security-Policy headers for all applicable policy types (frame, script, form, script, media, img etc.) according to business requirements and deployment layout of external file hosting services. Specifically, do not use a wildcard, '*', to specify these policies, as this would allow content from any external resource.
+
+The Content-Security-Policy can be explicitly defined within web-application code, as a header managed by web-server configurations, or within <meta> tags in the HTML <head> section.
+`
+    },
+    6428: {
+        risk: `
+APIs often respond with objects for a client to consume and, at times, these objects may contain more information than the client requires or intends to use. If the object returned to the client has this excess data, and that data is sensitive, it would be exposed to potentially malicious clients of the API.`,
+        cause: `
+The API returns an object with potentially sensitive data-fields, without excluding, filtering or nullifying said sensitive data - thus exposing it in an API response.`,
+        recommendation: `
+- When returning objects that hold data from an API, always consider the types and contexts of data being returned - such as whether or not it is required by the API's consumers, and whether or not it is sensitive
+- Opt to white-list allowed data to be in control of data flow and remove excess
+
+Example
+Java
+
+Exposing a Sensitive Field in a Spring REST API Response
+
+// POJO with Sensitive Data
+@Entity
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String username;
+    // Field will be exposed if User object is returned as-is from API:
+    private String encryptedPassword; 
+    // ... public constructors getters and setters ... //
+}
+
+// Spring REST Controller Mapped Method
+@GetMapping("/users/{id}")
+User findOne(@PathVariable Long id) {
+    User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    return user;
+}
+
+Using a DTO and ModelMapper To Whitelist Desired Output Fields in a Spring REST API
+
+// POJO with Sensitive Data
+@Entity
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String username;
+    private String encryptedPassword; 
+    // ... public constructors getters and setters ... //
+}
+
+// DTO without Sensitive Data
+public class UserDTO {
+    private Long id;
+    private String username;
+    // ... public constructors getters and setters ... //
+}
+
+// Spring REST Controller Mapped Method
+@GetMapping("/users/{id}")
+User findOne(@PathVariable Long id) {
+    User user = repository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+    UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+    return userDTO;
+}
+
+Spring Annotation Used to Exclude A Field from JSON Entirely - Can Also Be Set on Getter Individually to Allow Setting a Value While Preventing Exposure
+
+// POJO with Sensitive Data
+@Entity
+public class User {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String username;
+    @JsonIgnore
+    private String encryptedPassword; 
+    // ... public constructors getters and setters ... //
+}
+
+`
+    },
+    6456: {
+        risk: `
+Missing function level authorization may allow authenticated users to access a function without any authorization checks. If these authenticated users should not be authorized by design logic to access this functionality, they may perform vertical privilege escalation by directly accessing functionality they are not authorized to access.`,
+        cause: `
+The function requires authentication, but fails to enforce explicit authorization.`,
+        recommendation: `
+How to avoid it
+- Enforce strict authorization rules within any environment that requires authentication.
+- Even in cases where certain functionality should be accessible to all users - authorization should be explicitly enforced by access control rules to ensure it is strict, well-defined and universally enforced.
+- Where possible, rely on .NET annotations to manage authorization, roles and policies in an orderly manner to avoid situations where mixed methods of authorization cause critical functionality authorization to be missed.
+
+Example
+CSharp
+
+Obtain Result Set with Authentication, without Explicit Authorization
+
+
+    [Authorize]
+    [HttpGet]
+    public DbSet<Order> Get()
+    {
+        return _context.Orders;
+    }
+
+
+Obtain Result Set with Authentication and Explicit Authorization, Using Annotation
+
+
+    [Authorize(Roles="admin")]
+    [HttpGet]
+    public DbSet<Order> Get()
+    {
+        return _context.Orders;
+    }
 `
     },
 }
